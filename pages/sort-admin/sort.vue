@@ -10,13 +10,21 @@
 		<text class="sort-but">删除</text>
 	</view>
 	<!-- 弹窗 -->
-	<page-container :show="true" position="bottom" bindenter="onEnter">
-		<view style="height: 900rpx;">111</view>
-	</sort-Header >
+	<page-container :show="show" position="bottom" bindenter="onEnter" bindclickoverlay="clickoverlay">
+		<view class="space-view">
+			<view class="modify-sub" @click="show = false">
+				<image src="/static/detail/guanbi.svg" mode="widthFix"></image>
+			</view>
+			<view class="att-input">
+				<input type="text" placeholder="请输入分类" placeholder-class="I-style" cursor-spacing="50"/>
+			</view>
+			<view class="newly-added classif">提交</view>
+		</view>
+	</page-container>
 	<!-- 底部新增分类按钮 -->
 	<view style="height: 300rpx;"></view>
 	<view class="newly-added-view">
-		<view class="newly-added">新增分类</view>
+		<view class="newly-added" @click="show = true">新增分类</view>
 	</view>
 </template>
 
@@ -24,6 +32,15 @@
 	function onEnter(e){
 		console.log(e);
 	}
+	function clickoverlay(e){
+		console.log(e);
+	}
+	
+	// 控制弹窗弹出
+	import {ref} from 'vue'
+	const show = ref(false);
+	
+	
 </script>
 
 <style scoped>
