@@ -26,6 +26,13 @@
 			</view>
 		</view>
 	</view>
+	<!-- 九宫格 -->
+	<view class="Gong-ge" :style=" 'top:' + Profit_top + 'px;' ">
+		<view v-for="(item,index) in plate" :key="index">
+			<image :src="item.image" mode="aspectFit"></image>
+			<text>{{item.name}}</text>
+		</view>
+	</view>
 </template>
 
 <script setup>
@@ -36,11 +43,36 @@
 		S_top:0,//胶囊按钮距离顶部高度
 		Custom_height:0,//上两个的和
 		Pro_height:0,//订单收益板块距离手机顶部的高度
+		Profit_top:0,//九宫格距离手机顶部高度
+		//九宫格的数据
+		plate:[
+			{
+				image:'/static/detail/hengfu.svg',
+				name:'横幅管理'
+			},
+			{
+				image:'/static/detail/miaosha.svg',
+				name:'秒杀管理'
+			},
+			{
+				image:'/static/detail/shangpin.svg',
+				name:'商品管理'
+			},
+			{
+				image:'/static/detail/dingdan.svg',
+				name:'订单管理'
+			},
+			{
+				image:'/static/detail/fenlei.svg',
+				name:'分类管理'
+			},
+		]
 	})
 	
-	const {S_height,S_top,Custom_height,Pro_height} = toRefs(search_data)
+	const {S_height,S_top,Custom_height,Pro_height,Profit_top,plate} = toRefs(search_data)
 	onMounted(()=>{
-		capSule()
+		capSule(),
+		proFit()
 	})
 	//获取胶囊按钮位置
 	function capSule(){
@@ -50,7 +82,15 @@
 		search_data.Custom_height = but_data.height + but_data.top;
 		search_data.Pro_height = but_data.height + but_data.top + 20;
 	}
-	
+	// 计算收益板块的高度
+	function proFit(){
+		const query = wx.createSelectorQuery()
+		query.select('.profit-view').boundingClientRect()
+		query.exec((res)=>{
+			console.log(res);
+			search_data.Profit_top = res[0].height + search_data.Pro_height + 10
+		})
+	}
 </script>
 
 <style>
