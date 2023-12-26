@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/sort-admin/sort",
     "pages/commodity/commodity",
     "pages/index/index",
     "pages/order/order"
