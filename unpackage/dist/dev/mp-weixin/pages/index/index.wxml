@@ -1,1 +1,1 @@
-<view class="content"> 首页 </view>
+<view class="Top-view"><view style="{{e}}"><view style="{{a}}"></view><view style="{{b + ';' + c + ';' + d}}">Dessert Oasis</view></view><view class="profit-view" style="{{f}}"><view class="profit-num"><text>累计收益(￥)</text><text>3</text></view><view class="profit-sale"><view><text>今日销售额</text><text>20</text></view><view><text>今日订单数</text><text>20</text></view><view><text>累计订单数</text><text>40</text></view></view></view></view>
