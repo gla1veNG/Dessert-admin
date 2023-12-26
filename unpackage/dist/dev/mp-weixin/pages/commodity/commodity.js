@@ -4,5 +4,5 @@ const _sfc_main = {};
 function _sfc_render(_ctx, _cache) {
   return {};
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/Dessert/Dessert-admin/pages/commodity/commodity.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-f133ce92"], ["__file", "E:/Dessert/Dessert-admin/pages/commodity/commodity.vue"]]);
 wx.createPage(MiniProgramPage);

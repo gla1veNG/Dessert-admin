@@ -1,4 +1,5 @@
 {
-  "navigationBarTitleText": "uni-app",
+  "navigationBarTitleText": "商品管理",
+  "navigationBarBackgroundColor": "#fefefe",
   "usingComponents": {}
 }
