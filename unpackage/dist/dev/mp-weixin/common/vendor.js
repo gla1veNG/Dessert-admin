@@ -6812,6 +6812,7 @@ exports._export_sfc = _export_sfc;
 exports.createSSRApp = createSSRApp;
 exports.e = e;
 exports.f = f;
+exports.isRef = isRef;
 exports.o = o;
 exports.onMounted = onMounted;
 exports.reactive = reactive;

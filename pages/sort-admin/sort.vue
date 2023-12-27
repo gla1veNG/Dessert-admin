@@ -18,9 +18,9 @@
 				<image src="/static/detail/guanbi.svg" mode="widthFix"></image>
 			</view>
 			<view class="att-input">
-				<input type="text" placeholder="请输入分类" placeholder-class="I-style" cursor-spacing="50"/>
+				<input type="text" v-model="sort_name" placeholder="请输入分类" placeholder-class="I-style" cursor-spacing="50"/>
 			</view>
-			<view class="newly-added classif">提交</view>
+			<view class="newly-added classif" @click="subMit">提交</view>
 		</view>
 	</page-container>
 	<!-- 底部新增分类按钮 -->
@@ -43,11 +43,12 @@
 	import {inIt} from '@/Acc-config/init.js'
 	
 	const show = ref(false);
-	const data = reactive({sort:[]});
-	const {sort} = toRefs(data);
+	const data = reactive({sort:[],sort_name:''});
+	const {sort,sort_name} = toRefs(data);
 	
 	onMounted(()=>{
-		getsort()
+		getsort(),
+		subMit()
 	})
 	//请求数据库
  	async function getsort(){
@@ -55,6 +56,15 @@
 		const res = await DB.database().collection('goods_sort').limit(10).get()
 		console.log(res);
 		data.sort = res.data;
+	}
+	//提交数据
+	import {Feedback} from '@/Acc-config/media.js'
+	function subMit(){
+		if(data.sort_name === ''){
+			new Feedback('输入分类不能为空','none').toast()
+			return false;
+		}
+		
 	}
 </script>
 
