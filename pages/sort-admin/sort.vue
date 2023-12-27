@@ -37,10 +37,24 @@
 	}
 	
 	// 控制弹窗弹出
-	import {ref} from 'vue'
+	import {ref,onMounted} from 'vue'
+	import {inIt} from '@/Acc-config/init.js'
+	
 	const show = ref(false);
 	
-	
+	onMounted(()=>{
+		getsort()
+	})
+ 	async function getsort(){
+		let DB = await inIt()
+		 console.log(DB);
+		 let res = await DB.database().collection('men').add({
+			 data:{
+				 m:1
+			 }
+		 })
+		 console.log(res)
+	}
 </script>
 
 <style scoped>
