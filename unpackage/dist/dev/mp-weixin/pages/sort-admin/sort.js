@@ -5,25 +5,33 @@ const _sfc_main = {
   __name: "sort",
   setup(__props) {
     const show = common_vendor.ref(false);
+    const data = common_vendor.reactive({ sort: [] });
+    const { sort } = common_vendor.toRefs(data);
     common_vendor.onMounted(() => {
       getsort();
     });
     async function getsort() {
       let DB = await AccConfig_init.inIt();
-      console.log(DB);
-      let res = await DB.database().collection("men").add({
-        data: {
-          m: 1
-        }
-      });
+      const res = await DB.database().collection("goods_sort").limit(10).get();
       console.log(res);
+      data.sort = res.data;
     }
     return (_ctx, _cache) => {
-      return {
-        a: common_vendor.o(($event) => show.value = false),
-        b: show.value,
-        c: common_vendor.o(($event) => show.value = true)
-      };
+      return common_vendor.e({
+        a: common_vendor.unref(sort).length > 0
+      }, common_vendor.unref(sort).length > 0 ? {} : {}, {
+        b: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
+          return {
+            a: common_vendor.t(item.sort_name),
+            b: index
+          };
+        }),
+        c: common_vendor.unref(sort).length === 0
+      }, common_vendor.unref(sort).length === 0 ? {} : {}, {
+        d: common_vendor.o(($event) => show.value = false),
+        e: show.value,
+        f: common_vendor.o(($event) => show.value = true)
+      });
     };
   }
 };

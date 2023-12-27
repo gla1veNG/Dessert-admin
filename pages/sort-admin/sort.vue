@@ -1,14 +1,16 @@
 <template>
-	<view class="sort-Header sort-position">
+	<view class="sort-Header sort-position" v-if = "sort.length > 0">
 		<text>分类</text>
 		<text>操作</text>
 	</view>
 	<!-- 撑出距离 -->
 	<view style="height: 90rpx;"></view>
-	<view class="sort-Header sort-table">
-		<text class="occupy">膨化食品</text>
+	<view class="sort-Header sort-table" v-for="(item,index) in sort" :key="index">
+		<text class="occupy">{{item.sort_name}}</text>
 		<text class="sort-but">删除</text>
 	</view>
+	<!-- 没有数据的提示 -->
+	<view class="Tips" v-if="sort.length === 0">目前没有任何分类数据</view>
 	<!-- 弹窗 -->
 	<page-container :show="show" position="bottom" bindenter="onEnter" bindclickoverlay="clickoverlay">
 		<view class="space-view">
@@ -37,23 +39,22 @@
 	}
 	
 	// 控制弹窗弹出
-	import {ref,onMounted} from 'vue'
+	import {ref,onMounted,reactive,toRefs} from 'vue'
 	import {inIt} from '@/Acc-config/init.js'
 	
 	const show = ref(false);
+	const data = reactive({sort:[]});
+	const {sort} = toRefs(data);
 	
 	onMounted(()=>{
 		getsort()
 	})
+	//请求数据库
  	async function getsort(){
 		let DB = await inIt()
-		 console.log(DB);
-		 let res = await DB.database().collection('men').add({
-			 data:{
-				 m:1
-			 }
-		 })
-		 console.log(res)
+		const res = await DB.database().collection('goods_sort').limit(10).get()
+		console.log(res);
+		data.sort = res.data;
 	}
 </script>
 
