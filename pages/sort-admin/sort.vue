@@ -53,7 +53,6 @@
  	async function getsort(){
 		let DB = await inIt();
 		const res = await DB.database().collection('goods_sort').limit(10).get()
-		console.log(res);
 		data.sort = res.data;
 	}
 	//提交数据
@@ -66,6 +65,7 @@
 		let DB = await inIt();
 		//查询数据库是否存在相同分类
 		const query_data = await DB.database().collection('goods_sort').where({sort_name:data.sort_name}).get();
+		console.log(query_data.data);
 		if(query_data.data.length > 0){
 			new Feedback('该分类已存在','none').toast();
 		}else{

@@ -14,7 +14,6 @@ const _sfc_main = {
     async function getsort() {
       let DB = await AccConfig_init.inIt();
       const res = await DB.database().collection("goods_sort").limit(10).get();
-      console.log(res);
       data.sort = res.data;
     }
     async function subMit() {
@@ -24,6 +23,7 @@ const _sfc_main = {
       }
       let DB = await AccConfig_init.inIt();
       const query_data = await DB.database().collection("goods_sort").where({ sort_name: data.sort_name }).get();
+      console.log(query_data.data);
       if (query_data.data.length > 0) {
         new AccConfig_media.Feedback("该分类已存在", "none").toast();
       } else {
