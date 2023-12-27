@@ -9,7 +9,7 @@ const _sfc_main = {
     const data = common_vendor.reactive({ sort: [], sort_name: "" });
     const { sort, sort_name } = common_vendor.toRefs(data);
     common_vendor.onMounted(() => {
-      getsort(), subMit();
+      getsort();
     });
     async function getsort() {
       let DB = await AccConfig_init.inIt();
@@ -17,10 +17,19 @@ const _sfc_main = {
       console.log(res);
       data.sort = res.data;
     }
-    function subMit() {
+    async function subMit() {
       if (data.sort_name === "") {
         new AccConfig_media.Feedback("输入分类不能为空", "none").toast();
         return false;
+      }
+      let DB = await AccConfig_init.inIt();
+      const query_data = await DB.database().collection("goods_sort").where({ sort_name: data.sort_name }).get();
+      if (query_data.data.length > 0) {
+        new AccConfig_media.Feedback("该分类已存在", "none").toast();
+      } else {
+        await DB.database().collection("goods_sort").add({ data: { sort_name: data.sort_name, quantity: 0 } });
+        data.sort_name === "";
+        show.value = false;
       }
     }
     return (_ctx, _cache) => {

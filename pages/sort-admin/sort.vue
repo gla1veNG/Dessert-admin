@@ -47,24 +47,32 @@
 	const {sort,sort_name} = toRefs(data);
 	
 	onMounted(()=>{
-		getsort(),
-		subMit()
+		getsort()
 	})
 	//请求数据库
  	async function getsort(){
-		let DB = await inIt()
+		let DB = await inIt();
 		const res = await DB.database().collection('goods_sort').limit(10).get()
 		console.log(res);
 		data.sort = res.data;
 	}
 	//提交数据
 	import {Feedback} from '@/Acc-config/media.js'
-	function subMit(){
+	async function subMit(){
 		if(data.sort_name === ''){
-			new Feedback('输入分类不能为空','none').toast()
+			new Feedback('输入分类不能为空','none').toast();
 			return false;
 		}
-		
+		let DB = await inIt();
+		//查询数据库是否存在相同分类
+		const query_data = await DB.database().collection('goods_sort').where({sort_name:data.sort_name}).get();
+		if(query_data.data.length > 0){
+			new Feedback('该分类已存在','none').toast();
+		}else{
+			const res = await DB.database().collection('goods_sort').add({data:{sort_name:data.sort_name,quantity:0}});
+			data.sort_name === '';
+			show.value = false
+		}
 	}
 </script>
 
