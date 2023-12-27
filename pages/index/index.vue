@@ -87,7 +87,6 @@
 		const query = wx.createSelectorQuery()
 		query.select('.profit-view').boundingClientRect()
 		query.exec((res)=>{
-			console.log(res);
 			search_data.Profit_top = res[0].height + search_data.Pro_height + 10
 		})
 	}

@@ -53,7 +53,6 @@ const _sfc_main = {
       const query = common_vendor.wx$1.createSelectorQuery();
       query.select(".profit-view").boundingClientRect();
       query.exec((res) => {
-        console.log(res);
         search_data.Profit_top = res[0].height + search_data.Pro_height + 10;
       });
     }
