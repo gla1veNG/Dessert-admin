@@ -57,6 +57,19 @@ const _sfc_main = {
       data.sort = new_data;
       loading.value = false;
     });
+    async function deLete(id, index, quantity) {
+      if (quantity > 0) {
+        new AccConfig_media.Feedback("请先删除该分类里面的商品", "none").toast();
+        return false;
+      }
+      try {
+        let DB = await AccConfig_init.inIt();
+        await DB.database().collection("goods_sort").doc(id).remove();
+        data.sort.splice(index, 1);
+      } catch (e) {
+        new AccConfig_media.Feedback("请先删除该分类里面的商品", "none").toast();
+      }
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(sort).length > 0
@@ -64,7 +77,8 @@ const _sfc_main = {
         b: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
           return {
             a: common_vendor.t(item.sort_name),
-            b: index
+            b: common_vendor.o(($event) => deLete(item._id, index, item.quantity), index),
+            c: index
           };
         }),
         c: common_vendor.unref(sort).length === 0

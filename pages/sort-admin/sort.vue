@@ -7,7 +7,7 @@
 	<view style="height: 90rpx;"></view>
 	<view class="sort-Header sort-table" v-for="(item,index) in sort" :key="index">
 		<text class="occupy">{{item.sort_name}}</text>
-		<text class="sort-but">删除</text>
+		<text class="sort-but" @click="deLete(item._id,index,item.quantity)">删除</text>
 	</view>
 	<!-- 没有数据的提示 -->
 	<view class="Tips" v-if="sort.length === 0">目前没有任何分类数据</view>
@@ -84,10 +84,10 @@
 		}
 	}
 
-//上拉加载
-let page_n = ref(0);
-let loading = ref(false);
-onReachBottom(async()=>{
+	//上拉加载
+	let page_n = ref(0);
+	let loading = ref(false);
+	onReachBottom(async()=>{
 	loading.value = true;
 	page_n.value++;
 	let sk = page_n.value *10;
@@ -106,6 +106,21 @@ onReachBottom(async()=>{
 	data.sort = new_data;
 	loading.value = false;
 })
+
+	//删除分类
+	async function deLete(id,index,quantity){
+		if(quantity > 0){
+			new Feedback('请先删除该分类里面的商品','none').toast();
+			return false;
+		}
+		try{
+			let DB = await inIt();
+			await DB.database().collection('goods_sort').doc(id).remove();
+			data.sort.splice(index,1);
+		}catch(e){
+			new Feedback('请先删除该分类里面的商品','none').toast();
+		}
+	}
 </script>
 
 <style scoped>
