@@ -2,6 +2,10 @@
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+if (!Math) {
+  Loading();
+}
+const Loading = () => "../public-view/loading.js";
 const _sfc_main = {
   __name: "sort",
   setup(__props) {
@@ -34,12 +38,15 @@ const _sfc_main = {
       }
     }
     let page_n = common_vendor.ref(0);
+    let loading = common_vendor.ref(false);
     common_vendor.onReachBottom(async () => {
+      loading.value = true;
       page_n.value++;
       let sk = page_n.value * 10;
       let DB = await AccConfig_init.inIt();
       const res = await DB.database().collection("goods_sort").limit(10).skip(sk).field({ _openid: false }).get();
       data.sort = [...data.sort, ...res.data];
+      loading.value = false;
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -58,7 +65,9 @@ const _sfc_main = {
         f: common_vendor.o(($event) => common_vendor.isRef(sort_name) ? sort_name.value = $event.detail.value : null),
         g: common_vendor.o(subMit),
         h: show.value,
-        i: common_vendor.o(($event) => show.value = true)
+        i: common_vendor.unref(loading)
+      }, common_vendor.unref(loading) ? {} : {}, {
+        j: common_vendor.o(($event) => show.value = true)
       });
     };
   }

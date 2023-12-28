@@ -23,6 +23,10 @@
 			<view class="newly-added classif" @click="subMit">提交</view>
 		</view>
 	</page-container>
+	<!-- 加载提示 -->
+	<view class="loading-hei">
+		<Loading v-if="loading"></Loading>
+	</view>
 	<!-- 底部新增分类按钮 -->
 	<view style="height: 300rpx;"></view>
 	<view class="newly-added-view">
@@ -42,6 +46,7 @@
 	import {ref,onMounted,reactive,toRefs} from 'vue'
 	import {onReachBottom} from '@dcloudio/uni-app'
 	import {inIt} from '@/Acc-config/init.js'
+	import Loading from '@/pages/public-view/loading.vue'
 	
 	const show = ref(false);
 	const data = reactive({sort:[],sort_name:''});
@@ -81,12 +86,15 @@
 
 //上拉加载
 let page_n = ref(0);
+let loading = ref(false);
 onReachBottom(async()=>{
+	loading.value = true;
 	page_n.value++;
 	let sk = page_n.value *10;
 	let DB = await inIt();
 	const res = await DB.database().collection('goods_sort').limit(10).skip(sk).field({_openid:false}).get()
 	data.sort = [...data.sort,...res.data];
+	loading.value = false;
 })
 </script>
 
