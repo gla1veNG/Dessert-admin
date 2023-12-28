@@ -45,7 +45,16 @@ const _sfc_main = {
       let sk = page_n.value * 10;
       let DB = await AccConfig_init.inIt();
       const res = await DB.database().collection("goods_sort").limit(10).skip(sk).field({ _openid: false }).get();
-      data.sort = [...data.sort, ...res.data];
+      let merge = [...data.sort, ...res.data];
+      let obj = {};
+      let new_data = merge.reduce((prev, item) => {
+        if (!obj[item._id]) {
+          prev.push(item);
+          obj[item._id] = true;
+        }
+        return prev;
+      }, []);
+      data.sort = new_data;
       loading.value = false;
     });
     return (_ctx, _cache) => {

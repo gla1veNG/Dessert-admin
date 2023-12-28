@@ -93,7 +93,17 @@ onReachBottom(async()=>{
 	let sk = page_n.value *10;
 	let DB = await inIt();
 	const res = await DB.database().collection('goods_sort').limit(10).skip(sk).field({_openid:false}).get()
-	data.sort = [...data.sort,...res.data];
+	let merge = [...data.sort,...res.data];
+	//数组对象去重
+	let obj = {};
+	let new_data = merge.reduce((prev,item)=>{
+		if(!obj[item._id]){
+			prev.push(item);
+			obj[item._id] = true;
+		}
+		return prev;
+	},[]);
+	data.sort = new_data;
 	loading.value = false;
 })
 </script>
