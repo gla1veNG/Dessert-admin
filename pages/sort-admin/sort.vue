@@ -40,6 +40,7 @@
 	
 	// 控制弹窗弹出
 	import {ref,onMounted,reactive,toRefs} from 'vue'
+	import {onReachBottom} from '@dcloudio/uni-app'
 	import {inIt} from '@/Acc-config/init.js'
 	
 	const show = ref(false);
@@ -55,6 +56,7 @@
 		const res = await DB.database().collection('goods_sort').limit(10).field({_openid:false}).get()
 		data.sort = res.data;
 	}
+	
 	//提交数据
 	import {Feedback} from '@/Acc-config/media.js'
 	async function subMit(){
@@ -76,6 +78,16 @@
 			show.value = false;
 		}
 	}
+
+//上拉加载
+let page_n = ref(0);
+onReachBottom(async()=>{
+	page_n.value++;
+	let sk = page_n.value *10;
+	let DB = await inIt();
+	const res = await DB.database().collection('goods_sort').limit(10).skip(sk).field({_openid:false}).get()
+	data.sort = [...data.sort,...res.data];
+})
 </script>
 
 <style scoped>

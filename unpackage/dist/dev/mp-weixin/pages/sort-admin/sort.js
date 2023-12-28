@@ -33,6 +33,14 @@ const _sfc_main = {
         show.value = false;
       }
     }
+    let page_n = common_vendor.ref(0);
+    common_vendor.onReachBottom(async () => {
+      page_n.value++;
+      let sk = page_n.value * 10;
+      let DB = await AccConfig_init.inIt();
+      const res = await DB.database().collection("goods_sort").limit(10).skip(sk).field({ _openid: false }).get();
+      data.sort = [...data.sort, ...res.data];
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(sort).length > 0
