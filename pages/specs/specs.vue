@@ -14,30 +14,30 @@
 		</view>
 	</view>
 	<!-- 规格生成 -->
-	<view class="attribute gener">
-		<view class="edit specs-delete">
-			<text>规格1</text>
-			<text>删除</text>
+	<view class="attribute gener" v-for="(item,index) in sku_data.sku" :key="index">
+		<view class="edit specs-delete" >
+			<text>规格{{item.title}}</text>
+			<text v-if="sku_data.sku.length > 1">删除</text>
 		</view>
-		<view class="edit entry">
-			<text>口味</text>
-			<input type="text" placeholder="请输入口味" placeholder-class="I-style" cursor-spacing="50" />
+		<view class="edit entry" v-if="item.att_data.length > 0" v-for="(item_add,index_add) in item.att_data" :key="index_add">
+			<text>{{item_add.att_name}}</text>
+			<input type="text" v-model="item_add.add_val" :placeholder=" '请输入' + item.item_add.att_name " placeholder-class="I-style" cursor-spacing="50" />
 		</view>
 		<view class="edit entry">
 			<text>价格</text>
-			<input type="text" placeholder="请输入价格" placeholder-class="I-style" cursor-spacing="50" />
+			<input type="text" v-model="item.price" placeholder="请输入价格" placeholder-class="I-style" cursor-spacing="50" />
 			<text>￥</text>
 		</view>
 		<view class="edit entry">
 			<text>库存</text>
-			<input type="text" placeholder="请输入库存" placeholder-class="I-style" cursor-spacing="50" />
+			<input type="text" v-model="item.stock" placeholder="请输入库存" placeholder-class="I-style" cursor-spacing="50" />
 			<text>件</text>
 		</view>
 		<!-- 上传图片 -->
 		<view class="specs-image">
-			<image src="/static/detail/shuxing-img.png" mode="aspectFill"></image>
-			<!-- <image src="/static/detail/026.jpg" mode="aspectFill"></image> -->
-			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix"></image>
+			<image src="/static/detail/shuxing-img.png" mode="aspectFill" v-if="item.image === '' "></image>
+			<image :src="item.image" mode="aspectFill" v-else></image>
+			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix" v-if="item.image != ''"></image>
 		</view>
 	</view>
 	<!-- 添加规格 -->
@@ -53,9 +53,9 @@
 				<text>修改属性</text>
 				<text>提交</text>
 			</view>
-			<view class="att-input">
-				<text>属性1</text>
-				<input type="text" placeholder="输入属性" placeholder-class="I-style" cursor-spacing="50" />
+			<view class="att-input" v-for="(item,index) in Sto_att.attobj" :key="index">
+				<text>属性{{item.title}}</text>
+				<input type="text" v-model="item.att" placeholder="输入属性" placeholder-class="I-style" cursor-spacing="50" />
 			</view>
 		</view>
 	</page-container>
@@ -65,8 +65,17 @@
 	function onEnter() {}
 	
 	//控制弹窗弹出
-	import {ref} from 'vue'
+	import {ref,reactive} from 'vue'
 	const show = ref(false);
+	
+	//存储sku数据
+	const sku_data = reactive({
+		sku:[{title:1,att_data:[],price:'',stock:'',image:''}]
+	})
+	//创建的属性
+	const Sto_att = reactive({
+		attobj:[{att:'',title:1},{att:'',title:2},{att:'',title:3}]
+	})
 </script>
 
 <style>
