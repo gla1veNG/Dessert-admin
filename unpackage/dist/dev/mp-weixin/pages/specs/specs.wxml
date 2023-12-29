@@ -1,1 +1,1 @@
-<view>1111</view>
+<view class="attribute"><view class="edit"><text>请给商品规格设置合适的属性</text><text>编辑</text></view><view class="checkbox"><checkbox-group style="display:flex"><label><checkbox color="#e96c56"/>口味 </label></checkbox-group></view></view>
