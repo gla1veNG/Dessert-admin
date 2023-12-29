@@ -85,6 +85,11 @@
 			<image src="../../static/detail/shpin-img.jpg" mode="widthFix"></image>
 		</view>
 	</view>
+	<!-- 底部 -->
+	<view style="height: 300rpx;"></view>
+	<view class="newly-added-view back">
+		<view class="newly-added">上架售卖</view>
+	</view>
 </template>
 
 <script>
