@@ -66,6 +66,7 @@ const _sfc_main = {
         let DB = await AccConfig_init.inIt();
         await DB.database().collection("goods_sort").doc(id).remove();
         data.sort.splice(index, 1);
+        console.log(data.sort);
       } catch (e) {
         new AccConfig_media.Feedback("请先删除该分类里面的商品", "none").toast();
       }
