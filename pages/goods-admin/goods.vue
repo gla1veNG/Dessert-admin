@@ -59,7 +59,9 @@
 		</view>
 		<!-- 已有规格展示 -->
 		<view class="Se-specs S-flex">
-			<view><image src="/static/detail/026.jpg" mode="aspectFill"></image></view>
+			<view>
+				<image src="/static/detail/026.jpg" mode="aspectFill"></image>
+			</view>
 			<view class="S-top">
 				<view class="S-flex S-right">
 					<text>微辣</text>
@@ -70,6 +72,17 @@
 				</view>
 			</view>
 			<view class="S-price">10</view>
+		</view>
+	</view>
+	<!-- 详情图 -->
+	<view class="specs-view">
+		<view class="specs-title"><text>商品详情</text></view>
+		<view class="detail-image">
+			<image src="/static/detail/026.jpg" mode="widthFix"></image>
+			<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
+		</view>
+		<view class="specs-image">
+			<image src="../../static/detail/shpin-img.jpg" mode="widthFix"></image>
 		</view>
 	</view>
 </template>
