@@ -3,7 +3,7 @@
 	<view class="attribute">
 		<view class="edit">
 			<text>请给商品规格设置合适的属性</text>
-			<text>编辑</text>
+			<text @click="show = true">编辑</text>
 		</view>
 		<view class="checkbox">
 			<checkbox-group style="display: flex;">
@@ -40,9 +40,33 @@
 			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix"></image>
 		</view>
 	</view>
+	<!-- 添加规格 -->
+	<view class="attribute gener new-specs">
+		<image src="/static/detail/jiahao.svg" mode="widthFix"></image>
+		<text>规格</text>
+	</view>
+	<!-- 弹窗 -->
+	<page-container :show="show" bindenter="onEnter">
+		<view class="space-view">
+			<view class="modify-sub">
+				<image src="/static/detail/guanbi.svg" mode="widthFix" @click="show = false"></image>
+				<text>修改属性</text>
+				<text>提交</text>
+			</view>
+			<view class="att-input">
+				<text>属性1</text>
+				<input type="text" placeholder="输入属性" placeholder-class="I-style" cursor-spacing="50" />
+			</view>
+		</view>
+	</page-container>
 </template>
 
-<script>
+<script setup>
+	function onEnter() {}
+	
+	//控制弹窗弹出
+	import {ref} from 'vue'
+	const show = ref(false);
 </script>
 
 <style>
