@@ -21,6 +21,15 @@
 		</view>
 		<video style="display:none;"></video>
 	</view>
+	<!-- 所属分类 -->
+	<view class="space-view">
+		<picker mode="selector"></picker>
+		<view class="sort-title specs-title">
+			<text>所属分类</text>
+			<text>膨化食品</text>
+			<image src="/static/detail/xiangyou-jiantou.svg" mode="widthFix"></image>
+		</view>
+	</view>
 </template>
 
 <script>
