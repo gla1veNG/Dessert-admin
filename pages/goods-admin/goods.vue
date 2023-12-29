@@ -48,6 +48,30 @@
 			<text>件</text>
 		</view>
 	</view>
+	<!-- 创建规格 -->
+	<view class="specs-view">
+		<view class="specs-title">
+			<text>创建规格（可选）</text>
+			<image src="/static/detail/xiangyou-jiantou.svg" mode="widthFix"></image>
+		</view>
+		<view class="specs-image" style="display:none;">
+			<image src="/static/detail/guige-img.jpg" mode="widthFix"></image>
+		</view>
+		<!-- 已有规格展示 -->
+		<view class="Se-specs S-flex">
+			<view><image src="/static/detail/026.jpg" mode="aspectFill"></image></view>
+			<view class="S-top">
+				<view class="S-flex S-right">
+					<text>微辣</text>
+				</view>
+				<view class="S-flex S-right S-stock">
+					<text>库存</text>
+					<text>10件</text>
+				</view>
+			</view>
+			<view class="S-price">10</view>
+		</view>
+	</view>
 </template>
 
 <script>
