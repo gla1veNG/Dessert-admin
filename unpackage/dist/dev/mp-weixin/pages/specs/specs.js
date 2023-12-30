@@ -31,6 +31,14 @@ const _sfc_main = {
         item.att_data = JSON.parse(JSON.stringify(new_att));
       });
     }
+    function newSpecs() {
+      let last_sku = sku_data.sku[sku_data.sku.length - 1];
+      let last_sku_title = last_sku.title;
+      last_sku_title++;
+      const new_sku = { title: last_sku_title, att_data: [], price: "", stock: "", image: "" };
+      last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+      sku_data.sku.push(new_sku);
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
@@ -72,9 +80,10 @@ const _sfc_main = {
           });
         }),
         d: sku_data.sku.length > 1,
-        e: common_vendor.o(($event) => show.value = false),
-        f: common_vendor.o(subMit),
-        g: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
+        e: common_vendor.o(newSpecs),
+        f: common_vendor.o(($event) => show.value = false),
+        g: common_vendor.o(subMit),
+        h: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
           return {
             a: common_vendor.t(item.title),
             b: item.att,
@@ -82,7 +91,7 @@ const _sfc_main = {
             d: index
           };
         }),
-        h: show.value
+        i: show.value
       };
     };
   }

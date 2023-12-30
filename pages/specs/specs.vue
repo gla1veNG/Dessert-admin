@@ -41,7 +41,7 @@
 		</view>
 	</view>
 	<!-- 添加规格 -->
-	<view class="attribute gener new-specs">
+	<view class="attribute gener new-specs" @click="newSpecs">
 		<image src="/static/detail/jiahao.svg" mode="widthFix"></image>
 		<text>规格</text>
 	</view>
@@ -99,6 +99,15 @@
 		sku_data.sku.forEach(item =>{
 			item.att_data = JSON.parse(JSON.stringify(new_att));
 		})
+	}
+	//新增规格
+	function newSpecs(){
+		let last_sku = sku_data.sku[sku_data.sku.length - 1];
+		let last_sku_title = last_sku.title;
+		last_sku_title++;
+		const new_sku = {title:last_sku_title,att_data:[],price:'',stock:'',image:''};
+		last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+		sku_data.sku.push(new_sku);
 	}
 </script>
 
