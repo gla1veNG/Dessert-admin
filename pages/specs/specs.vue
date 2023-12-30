@@ -17,7 +17,7 @@
 	<view class="attribute gener" v-for="(item,index) in sku_data.sku" :key="index">
 		<view class="edit specs-delete" >
 			<text>规格{{item.title}}</text>
-			<text v-if="sku_data.sku.length > 1">删除</text>
+			<text v-if="sku_data.sku.length > 1" @click="deleteSku(index)">删除</text>
 		</view>
 		<view class="edit entry" v-if="item.att_data.length > 0" v-for="(item_add,index_add) in item.att_data" :key="index_add">
 			<text>{{item_add.att_name}}</text>
@@ -106,8 +106,15 @@
 		let last_sku_title = last_sku.title;
 		last_sku_title++;
 		const new_sku = {title:last_sku_title,att_data:[],price:'',stock:'',image:''};
-		last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+		if(new_att.length >0){
+			last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+		}
 		sku_data.sku.push(new_sku);
+	}
+	//删除规格
+	function deleteSku(index){
+		sku_data.sku.splice(index,1);
+		sku_data.sku.forEach((item,index)=>{item.title = index + 1});
 	}
 </script>
 

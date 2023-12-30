@@ -36,8 +36,16 @@ const _sfc_main = {
       let last_sku_title = last_sku.title;
       last_sku_title++;
       const new_sku = { title: last_sku_title, att_data: [], price: "", stock: "", image: "" };
-      last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+      if (new_att.length > 0) {
+        last_sku.att_data = JSON.parse(JSON.stringify(new_att));
+      }
       sku_data.sku.push(new_sku);
+    }
+    function deleteSku(index) {
+      sku_data.sku.splice(index, 1);
+      sku_data.sku.forEach((item, index2) => {
+        item.title = index2 + 1;
+      });
     }
     return (_ctx, _cache) => {
       return {
@@ -53,10 +61,12 @@ const _sfc_main = {
         c: common_vendor.f(sku_data.sku, (item, index, i0) => {
           return common_vendor.e({
             a: common_vendor.t(item.title)
-          }, sku_data.sku.length > 1 ? {} : {}, {
-            b: item.att_data.length > 0
+          }, sku_data.sku.length > 1 ? {
+            b: common_vendor.o(($event) => deleteSku(index), index)
+          } : {}, {
+            c: item.att_data.length > 0
           }, item.att_data.length > 0 ? {
-            c: common_vendor.f(item.att_data, (item_add, index_add, i1) => {
+            d: common_vendor.f(item.att_data, (item_add, index_add, i1) => {
               return {
                 a: common_vendor.t(item_add.att_name),
                 b: "请输入" + item_add.att_name,
@@ -66,17 +76,17 @@ const _sfc_main = {
               };
             })
           } : {}, {
-            d: item.price,
-            e: common_vendor.o(($event) => item.price = $event.detail.value, index),
-            f: item.stock,
-            g: common_vendor.o(($event) => item.stock = $event.detail.value, index),
-            h: item.image === ""
+            e: item.price,
+            f: common_vendor.o(($event) => item.price = $event.detail.value, index),
+            g: item.stock,
+            h: common_vendor.o(($event) => item.stock = $event.detail.value, index),
+            i: item.image === ""
           }, item.image === "" ? {} : {
-            i: item.image
+            j: item.image
           }, {
-            j: item.image != ""
+            k: item.image != ""
           }, item.image != "" ? {} : {}, {
-            k: index
+            l: index
           });
         }),
         d: sku_data.sku.length > 1,
