@@ -6,7 +6,7 @@
 			<text @click="show = true">编辑</text>
 		</view>
 		<view class="checkbox">
-			<checkbox-group style="display: flex;">
+			<checkbox-group style="display: flex;" @change="chEchange">
 				<label v-for="(item,index) in attribute.selected" :key="index">
 					<checkbox :value="item.att" :checked="item.checked" color="#e96c56" />{{item.name}}
 				</label>
@@ -115,6 +115,18 @@
 	function deleteSku(index){
 		sku_data.sku.splice(index,1);
 		sku_data.sku.forEach((item,index)=>{item.title = index + 1});
+	}
+	//更改多选框 checked 的值，选中和取消选中
+	function chEchange(e){
+		let value = e.detail.value;//只留下选中的
+		attribute.selected.forEach((iteming,index)=>{
+			let item = attribute.selected[index];
+			if(value.includes(iteming.att)){
+				item.checked = true;
+			}else{
+				item.checked = false;
+			}
+		})
 	}
 </script>
 

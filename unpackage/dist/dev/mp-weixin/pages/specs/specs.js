@@ -47,6 +47,17 @@ const _sfc_main = {
         item.title = index2 + 1;
       });
     }
+    function chEchange(e) {
+      let value = e.detail.value;
+      attribute.selected.forEach((iteming, index) => {
+        let item = attribute.selected[index];
+        if (value.includes(iteming.att)) {
+          item.checked = true;
+        } else {
+          item.checked = false;
+        }
+      });
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
@@ -58,7 +69,8 @@ const _sfc_main = {
             d: index
           };
         }),
-        c: common_vendor.f(sku_data.sku, (item, index, i0) => {
+        c: common_vendor.o(chEchange),
+        d: common_vendor.f(sku_data.sku, (item, index, i0) => {
           return common_vendor.e({
             a: common_vendor.t(item.title)
           }, sku_data.sku.length > 1 ? {
@@ -89,11 +101,11 @@ const _sfc_main = {
             l: index
           });
         }),
-        d: sku_data.sku.length > 1,
-        e: common_vendor.o(newSpecs),
-        f: common_vendor.o(($event) => show.value = false),
-        g: common_vendor.o(subMit),
-        h: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
+        e: sku_data.sku.length > 1,
+        f: common_vendor.o(newSpecs),
+        g: common_vendor.o(($event) => show.value = false),
+        h: common_vendor.o(subMit),
+        i: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
           return {
             a: common_vendor.t(item.title),
             b: item.att,
@@ -101,7 +113,7 @@ const _sfc_main = {
             d: index
           };
         }),
-        i: show.value
+        j: show.value
       };
     };
   }
