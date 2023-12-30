@@ -12,6 +12,7 @@ const _sfc_main = {
     });
     const attribute = common_vendor.reactive({ selected: [] });
     function subMit() {
+      sku_data.sku = [{ title: 1, att_data: [], price: "", stock: "", image: "" }];
       const filter = Sto_att.attobj.filter((item) => item.att != "");
       const new_arr = [];
       filter.forEach((item) => {
@@ -32,14 +33,15 @@ const _sfc_main = {
       });
     }
     function newSpecs() {
-      let last_sku = sku_data.sku[sku_data.sku.length - 1];
-      let last_sku_title = last_sku.title;
-      last_sku_title++;
-      const new_sku = { title: last_sku_title, att_data: [], price: "", stock: "", image: "" };
-      if (new_att.length > 0) {
-        last_sku.att_data = JSON.parse(JSON.stringify(new_att));
-      }
+      let num = sku_data.sku[sku_data.sku.length - 1].title;
+      num++;
+      const new_sku = { title: num, att_data: [], price: "", stock: "", image: "" };
       sku_data.sku.push(new_sku);
+      let filter_arr = attribute.selected.filter((item) => item.checked);
+      let new_att2 = filter_arr.map((item) => {
+        return { att_name: item.att, att_val: "" };
+      });
+      sku_data.sku[sku_data.sku.length - 1].att_data = JSON.parse(JSON.stringify(new_att2));
     }
     function deleteSku(index) {
       sku_data.sku.splice(index, 1);
@@ -58,6 +60,21 @@ const _sfc_main = {
         }
       });
     }
+    function fInd(att, checked) {
+      if (checked) {
+        sku_data.sku.forEach((item) => {
+          item.att_data.push({ att_name: att, att_val: "" });
+        });
+      } else {
+        sku_data.sku.forEach((item_a, index_a) => {
+          item_a.att_data.forEach((item_b, index_b) => {
+            if (item_b.att_name == att) {
+              sku_data.sku[index_a].att_data.splice(index_b, 1);
+            }
+          });
+        });
+      }
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
@@ -66,7 +83,8 @@ const _sfc_main = {
             a: item.att,
             b: item.checked,
             c: common_vendor.t(item.name),
-            d: index
+            d: index,
+            e: common_vendor.o(($event) => fInd(item.att, item.checked), index)
           };
         }),
         c: common_vendor.o(chEchange),

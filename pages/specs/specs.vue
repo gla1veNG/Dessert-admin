@@ -7,7 +7,7 @@
 		</view>
 		<view class="checkbox">
 			<checkbox-group style="display: flex;" @change="chEchange">
-				<label v-for="(item,index) in attribute.selected" :key="index">
+				<label v-for="(item,index) in attribute.selected" :key="index" @click="fInd(item.att,item.checked)">
 					<checkbox :value="item.att" :checked="item.checked" color="#e96c56" />{{item.name}}
 				</label>
 			</checkbox-group>
@@ -80,6 +80,8 @@
 	const attribute = reactive({selected:[]})
 	//提交属性
 	function subMit(){
+		// 如果用户重新设置属性，那么就要让规格归位，清空
+		sku_data.sku = [{title:1,att_data:[],price:'',stock:'',image:''}]
 		//过滤填写的规格
 		const filter = Sto_att.attobj.filter(item=>item.att != '');
 		const new_arr = [];
@@ -102,14 +104,14 @@
 	}
 	//新增规格
 	function newSpecs(){
-		let last_sku = sku_data.sku[sku_data.sku.length - 1];
-		let last_sku_title = last_sku.title;
-		last_sku_title++;
-		const new_sku = {title:last_sku_title,att_data:[],price:'',stock:'',image:''};
-		if(new_att.length >0){
-			last_sku.att_data = JSON.parse(JSON.stringify(new_att));
-		}
-		sku_data.sku.push(new_sku);
+			let num = sku_data.sku[sku_data.sku.length - 1].title
+			num++
+			const new_sku = {title:num,att_data:[],price:'',stock:'',image:''}
+			sku_data.sku.push(new_sku)
+			// 向att_data添加属性
+			let filter_arr = attribute.selected.filter(item=>item.checked)
+			let new_att = filter_arr.map(item=>{return{att_name:item.att,att_val:''}})
+			sku_data.sku[sku_data.sku.length - 1].att_data = JSON.parse(JSON.stringify(new_att))
 	}
 	//删除规格
 	function deleteSku(index){
@@ -127,6 +129,22 @@
 				item.checked = false;
 			}
 		})
+	}
+	//选中和取消选中重新计算规格数组
+	function fInd(att,checked){
+		if(checked){//选中
+			sku_data.sku.forEach(item=>{
+				item.att_data.push({att_name:att,att_val:''})
+			})
+		}else{//未选中
+			sku_data.sku.forEach((item_a,index_a)=>{
+				item_a.att_data.forEach((item_b,index_b)=>{
+					if(item_b.att_name == att){
+						sku_data.sku[index_a].att_data.splice(index_b,1)
+					}
+				})
+			})
+		}
 	}
 </script>
 
