@@ -7,8 +7,8 @@
 		</view>
 		<view class="checkbox">
 			<checkbox-group style="display: flex;">
-				<label>
-					<checkbox color="#e96c56" />口味
+				<label v-for="(item,index) in attribute.selected" :key="index">
+					<checkbox :value="item.att" :checked="item.checked" color="#e96c56" />{{item.name}}
 				</label>
 			</checkbox-group>
 		</view>
@@ -51,7 +51,7 @@
 			<view class="modify-sub">
 				<image src="/static/detail/guanbi.svg" mode="widthFix" @click="show = false"></image>
 				<text>修改属性</text>
-				<text>提交</text>
+				<text @click="subMit">提交</text>
 			</view>
 			<view class="att-input" v-for="(item,index) in Sto_att.attobj" :key="index">
 				<text>属性{{item.title}}</text>
@@ -76,6 +76,19 @@
 	const Sto_att = reactive({
 		attobj:[{att:'',title:1},{att:'',title:2},{att:'',title:3}]
 	})
+	//多选框的值
+	const attribute = reactive({selected:[]})
+	//提交属性
+	function subMit(){
+		//过滤填写的规格
+		const filter = Sto_att.attobj.filter(item=>item.att != '');
+		const new_arr = [];
+		filter.forEach(item =>{
+			new_arr.push({att:item.att,name:item.att,checked:true});
+		})
+		attribute.selected = new_arr;
+		show.value = false;
+	}
 </script>
 
 <style>

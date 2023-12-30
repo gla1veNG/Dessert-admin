@@ -10,10 +10,28 @@ const _sfc_main = {
     const Sto_att = common_vendor.reactive({
       attobj: [{ att: "", title: 1 }, { att: "", title: 2 }, { att: "", title: 3 }]
     });
+    const attribute = common_vendor.reactive({ selected: [] });
+    function subMit() {
+      const filter = Sto_att.attobj.filter((item) => item.att != "");
+      const new_arr = [];
+      filter.forEach((item) => {
+        new_arr.push({ att: item.att, name: item.att, checked: true });
+      });
+      attribute.selected = new_arr;
+      show.value = false;
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
-        b: common_vendor.f(sku_data.sku, (item, index, i0) => {
+        b: common_vendor.f(attribute.selected, (item, index, i0) => {
+          return {
+            a: item.att,
+            b: item.checked,
+            c: common_vendor.t(item.name),
+            d: index
+          };
+        }),
+        c: common_vendor.f(sku_data.sku, (item, index, i0) => {
           return common_vendor.e({
             a: common_vendor.t(item.title)
           }, sku_data.sku.length > 1 ? {} : {}, {
@@ -42,9 +60,10 @@ const _sfc_main = {
             l: index
           });
         }),
-        c: sku_data.sku.length > 1,
-        d: common_vendor.o(($event) => show.value = false),
-        e: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
+        d: sku_data.sku.length > 1,
+        e: common_vendor.o(($event) => show.value = false),
+        f: common_vendor.o(subMit),
+        g: common_vendor.f(Sto_att.attobj, (item, index, i0) => {
           return {
             a: common_vendor.t(item.title),
             b: item.att,
@@ -52,7 +71,7 @@ const _sfc_main = {
             d: index
           };
         }),
-        f: show.value
+        h: show.value
       };
     };
   }
