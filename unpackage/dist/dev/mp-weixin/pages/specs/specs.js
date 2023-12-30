@@ -17,8 +17,19 @@ const _sfc_main = {
       filter.forEach((item) => {
         new_arr.push({ att: item.att, name: item.att, checked: true });
       });
-      attribute.selected = new_arr;
+      attribute.selected = JSON.parse(JSON.stringify(new_arr));
       show.value = false;
+      calsku();
+    }
+    let new_att = [];
+    function calsku() {
+      let filter_arr = attribute.selected.filter((item) => item.checked);
+      new_att = filter_arr.map((item) => {
+        return { att_name: item.att, att_val: "" };
+      });
+      sku_data.sku.forEach((item) => {
+        item.att_data = JSON.parse(JSON.stringify(new_att));
+      });
     }
     return (_ctx, _cache) => {
       return {
@@ -40,24 +51,24 @@ const _sfc_main = {
             c: common_vendor.f(item.att_data, (item_add, index_add, i1) => {
               return {
                 a: common_vendor.t(item_add.att_name),
-                b: item_add.add_val,
-                c: common_vendor.o(($event) => item_add.add_val = $event.detail.value, index_add),
-                d: index_add
+                b: "请输入" + item_add.att_name,
+                c: item_add.add_val,
+                d: common_vendor.o(($event) => item_add.add_val = $event.detail.value, index_add),
+                e: index_add
               };
-            }),
-            d: "请输入" + item.item_add.att_name
+            })
           } : {}, {
-            e: item.price,
-            f: common_vendor.o(($event) => item.price = $event.detail.value, index),
-            g: item.stock,
-            h: common_vendor.o(($event) => item.stock = $event.detail.value, index),
-            i: item.image === ""
+            d: item.price,
+            e: common_vendor.o(($event) => item.price = $event.detail.value, index),
+            f: item.stock,
+            g: common_vendor.o(($event) => item.stock = $event.detail.value, index),
+            h: item.image === ""
           }, item.image === "" ? {} : {
-            j: item.image
+            i: item.image
           }, {
-            k: item.image != ""
+            j: item.image != ""
           }, item.image != "" ? {} : {}, {
-            l: index
+            k: index
           });
         }),
         d: sku_data.sku.length > 1,

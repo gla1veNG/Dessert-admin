@@ -21,7 +21,7 @@
 		</view>
 		<view class="edit entry" v-if="item.att_data.length > 0" v-for="(item_add,index_add) in item.att_data" :key="index_add">
 			<text>{{item_add.att_name}}</text>
-			<input type="text" v-model="item_add.add_val" :placeholder=" '请输入' + item.item_add.att_name " placeholder-class="I-style" cursor-spacing="50" />
+			<input type="text" v-model="item_add.add_val" :placeholder=" '请输入' + item_add.att_name " placeholder-class="I-style" cursor-spacing="50" />
 		</view>
 		<view class="edit entry">
 			<text>价格</text>
@@ -86,8 +86,19 @@
 		filter.forEach(item =>{
 			new_arr.push({att:item.att,name:item.att,checked:true});
 		})
-		attribute.selected = new_arr;
+		attribute.selected = JSON.parse(JSON.stringify(new_arr));
 		show.value = false;
+		
+		calsku();
+	}
+	//计算生成动态规格
+	let new_att = [];
+	function calsku(){
+		let filter_arr = attribute.selected.filter(item =>item.checked);
+		new_att = filter_arr.map(item => {return {att_name:item.att,att_val:''}});
+		sku_data.sku.forEach(item =>{
+			item.att_data = JSON.parse(JSON.stringify(new_att));
+		})
 	}
 </script>
 
