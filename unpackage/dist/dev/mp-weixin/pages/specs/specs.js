@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+const AccConfig_answer = require("../../Acc-config/answer.js");
 require("../../Acc-config/init.js");
 const _sfc_main = {
   __name: "specs",
@@ -179,6 +180,7 @@ const _sfc_main = {
         item.price = Number(item.price);
         item.stock = Number(item.stock);
       });
+      AccConfig_answer.sku_val.value = sku_data.sku;
     }
     return (_ctx, _cache) => {
       return {

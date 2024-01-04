@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const AccConfig_answer = require("../../Acc-config/answer.js");
 const _sfc_main = {
   __name: "goods",
   setup(__props) {
@@ -8,6 +9,9 @@ const _sfc_main = {
         url: "/pages/specs/specs"
       });
     }
+    common_vendor.watch(AccConfig_answer.sku_val, (newVal, oldVal) => {
+      console.log(newVal);
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(juMp)

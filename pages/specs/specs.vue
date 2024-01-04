@@ -78,7 +78,10 @@
 
 <script setup>
 	function onEnter() {}
-	import {ref,reactive} from 'vue'
+	import {
+		ref,
+		reactive
+	} from 'vue'
 	// 控制弹窗框显示
 	const show = ref(false)
 	/* 存储sku数据 */
@@ -213,7 +216,10 @@
 	}
 
 	// 上传图片
-	import {Upload,Feedback} from '@/Acc-config/media.js'
+	import {
+		Upload,
+		Feedback
+	} from '@/Acc-config/media.js'
 	async function upLoad(index) {
 		try {
 			let local = await new Upload().image()
@@ -240,6 +246,8 @@
 	}
 
 	// 提交
+	import {sku_val} from '@/Acc-config/answer.js'
+
 	function preserve() {
 		// 1.属性未选
 		if (attribute.selected.length == 0) {
@@ -277,10 +285,11 @@
 				}
 			}
 		}
-		sku_data.sku.forEach(item =>{
+		sku_data.sku.forEach(item => {
 			item.price = Number(item.price);
-			item.stock= Number(item.stock);
+			item.stock = Number(item.stock);
 		})
+		sku_val.value = sku_data.sku;
 	}
 </script>
 

@@ -93,12 +93,18 @@
 </template>
 
 <script setup>
+	import {watch} from 'vue'
 	//调整规格页面
 	function juMp(){
 		wx.navigateTo({
 			url:'/pages/specs/specs'
 		})
 	}
+	//创建规格后携带值返回上一页面
+	import {sku_val} from '@/Acc-config/answer.js'
+	watch(sku_val,(newVal,oldVal)=>{
+		console.log(newVal);
+	})
 </script>
 <style>
 	page {
