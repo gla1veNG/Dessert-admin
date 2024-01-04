@@ -14,4 +14,25 @@ class Feedback{
 		})
 	}
 }
-export {Feedback}
+
+//媒体处理
+class Upload{
+	constructor(){}
+	//上传本地图片
+	image(count = 1,type = 'image'){
+		return new Promise((resolve,reject)=>{
+			wx.chooseMedia({
+				count,
+				mediaType:[type],
+				sourceType:['album']
+			})
+		})
+		.then(res=>{
+			resolve(res.tempFiles);
+		})
+		.catch(err=>{
+			reject(err);
+		})
+	}
+}
+export {Feedback,Upload}

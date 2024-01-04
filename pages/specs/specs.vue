@@ -35,7 +35,7 @@
 		</view>
 		<!-- 上传图片 -->
 		<view class="specs-image">
-			<image src="/static/detail/shuxing-img.png" mode="aspectFill" v-if="item.image === '' "></image>
+			<image src="/static/detail/shuxing-img.png" mode="aspectFill" v-if="item.image === '' " @click="upLoad(index)"></image>
 			<image :src="item.image" mode="aspectFill" v-else></image>
 			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix" v-if="item.image != ''"></image>
 		</view>
@@ -145,6 +145,12 @@
 				})
 			})
 		}
+	}
+	import {Upload} from '@/Acc-config/media.js'
+	//上传图片
+	async function upLoad(index){
+		let local =	await new Upload().image();
+		console.log(local);
 	}
 </script>
 
