@@ -78,9 +78,15 @@ const _sfc_main = {
       }
     }
     async function upLoad(index) {
-      let local = await new AccConfig_media.Upload().image();
-      let res = await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
-      sku_data.sku[index].image = res;
+      try {
+        let local = await new AccConfig_media.Upload().image();
+        common_vendor.wx$1.showLoading({ title: "上传中", mask: true });
+        let res = await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
+        sku_data.sku[index].image = res;
+        common_vendor.wx$1.hideLoading();
+      } catch (e) {
+        new AccConfig_media.Feedback("上传失败").toast();
+      }
     }
     return (_ctx, _cache) => {
       return {

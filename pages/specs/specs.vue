@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+import { Feedback } from '../../Acc-config/media';
 	function onEnter() {}
 	
 	//控制弹窗弹出
@@ -104,14 +105,14 @@
 	}
 	//新增规格
 	function newSpecs(){
-			let num = sku_data.sku[sku_data.sku.length - 1].title
-			num++
+			let num = sku_data.sku[sku_data.sku.length - 1].title;
+			num++;
 			const new_sku = {title:num,att_data:[],price:'',stock:'',image:''}
-			sku_data.sku.push(new_sku)
+			sku_data.sku.push(new_sku);
 			// 向att_data添加属性
-			let filter_arr = attribute.selected.filter(item=>item.checked)
-			let new_att = filter_arr.map(item=>{return{att_name:item.att,att_val:''}})
-			sku_data.sku[sku_data.sku.length - 1].att_data = JSON.parse(JSON.stringify(new_att))
+			let filter_arr = attribute.selected.filter(item=>item.checked);
+			let new_att = filter_arr.map(item=>{return{att_name:item.att,att_val:''}});
+			sku_data.sku[sku_data.sku.length - 1].att_data = JSON.parse(JSON.stringify(new_att));
 	}
 	//删除规格
 	function deleteSku(index){
@@ -134,13 +135,13 @@
 	function fInd(att,checked){
 		if(checked){//选中
 			sku_data.sku.forEach(item=>{
-				item.att_data.push({att_name:att,att_val:''})
+				item.att_data.push({att_name:att,att_val:''});
 			})
 		}else{//未选中
 			sku_data.sku.forEach((item_a,index_a)=>{
 				item_a.att_data.forEach((item_b,index_b)=>{
 					if(item_b.att_name == att){
-						sku_data.sku[index_a].att_data.splice(index_b,1)
+						sku_data.sku[index_a].att_data.splice(index_b,1);
 					}
 				})
 			})
@@ -149,9 +150,15 @@
 	import {Upload} from '@/Acc-config/media.js'
 	//上传图片
 	async function upLoad(index){
-		let local =	await new Upload().image();
-		let res = await new Upload().cloud(local[0].tempFilePath);
-		sku_data.sku[index].image = res;
+		try{
+			let local =	await new Upload().image();
+			wx.showLoading({title:'上传中',mask:true});
+			let res = await new Upload().cloud(local[0].tempFilePath);
+			sku_data.sku[index].image = res;
+			wx.hideLoading();
+		}catch(e){
+			new Feedback('上传失败').toast();
+		}
 	}
 </script>
 
