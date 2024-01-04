@@ -37,7 +37,7 @@
 		<view class="specs-image">
 			<image src="/static/detail/shuxing-img.png" mode="aspectFill" v-if="item.image === '' " @click="upLoad(index)"></image>
 			<image :src="item.image" mode="aspectFill" v-else></image>
-			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix" v-if="item.image != ''"></image>
+			<image class="delete-img" src="/static/detail/shanchu.svg" mode="widthFix" v-if="item.image != ''" @click="dePicture(index)"></image>
 		</view>
 	</view>
 	<!-- 添加规格 -->
@@ -159,6 +159,10 @@ import { Feedback } from '../../Acc-config/media';
 		}catch(e){
 			new Feedback('上传失败').toast();
 		}
+	}
+	//删除图片
+	function dePicture(index){
+		sku_data.sku[index].image = '';
 	}
 </script>
 

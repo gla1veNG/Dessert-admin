@@ -88,6 +88,9 @@ const _sfc_main = {
         new AccConfig_media.Feedback("上传失败").toast();
       }
     }
+    function dePicture(index) {
+      sku_data.sku[index].image = "";
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
@@ -130,8 +133,10 @@ const _sfc_main = {
             k: item.image
           }, {
             l: item.image != ""
-          }, item.image != "" ? {} : {}, {
-            m: index
+          }, item.image != "" ? {
+            m: common_vendor.o(($event) => dePicture(index), index)
+          } : {}, {
+            n: index
           });
         }),
         e: sku_data.sku.length > 1,
