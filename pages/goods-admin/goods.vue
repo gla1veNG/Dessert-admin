@@ -49,7 +49,7 @@
 		</view>
 	</view>
 	<!-- 创建规格 -->
-	<view class="specs-view">
+	<view class="specs-view" @click="juMp">
 		<view class="specs-title">
 			<text>创建规格（可选）</text>
 			<image src="/static/detail/xiangyou-jiantou.svg" mode="widthFix"></image>
@@ -92,9 +92,14 @@
 	</view>
 </template>
 
-<script>
+<script setup>
+	//调整规格页面
+	function juMp(){
+		wx.navigateTo({
+			url:'/pages/specs/specs'
+		})
+	}
 </script>
-
 <style>
 	page {
 		background-color: #f2f2f2;

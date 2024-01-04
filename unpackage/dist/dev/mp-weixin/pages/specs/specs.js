@@ -175,7 +175,10 @@ const _sfc_main = {
           }
         }
       }
-      console.log(sku_data.sku);
+      sku_data.sku.forEach((item) => {
+        item.price = Number(item.price);
+        item.stock = Number(item.stock);
+      });
     }
     return (_ctx, _cache) => {
       return {
