@@ -151,6 +151,7 @@
 	async function upLoad(index){
 		let local =	await new Upload().image();
 		console.log(local);
+		await new Upload().cloud(local[0].tempFilePath)
 	}
 </script>
 

@@ -79,6 +79,7 @@ const _sfc_main = {
     async function upLoad(index) {
       let local = await new AccConfig_media.Upload().image();
       console.log(local);
+      await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
     }
     return (_ctx, _cache) => {
       return {

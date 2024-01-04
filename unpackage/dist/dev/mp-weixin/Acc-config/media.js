@@ -18,18 +18,25 @@ class Feedback {
 class Upload {
   constructor() {
   }
-  //上传本地图片
+  // 上传本地图片
   image(count = 1, type = "image") {
-    return new Promise((resolve2, reject2) => {
+    return new Promise((resolve, reject) => {
       common_vendor.wx$1.chooseMedia({
         count,
         mediaType: [type],
         sourceType: ["album"]
+      }).then((res) => {
+        resolve(res.tempFiles);
+      }).catch((err) => {
+        reject(err);
       });
-    }).then((res) => {
-      resolve(res.tempFiles);
-    }).catch((err) => {
-      reject(err);
+    });
+  }
+  // 上传图片或者视频到云存储
+  async cloud(route) {
+    let imgion = route.lastIndexOf(".");
+    route.slice(imgion);
+    return new Promise((resolve, reject) => {
     });
   }
 }
