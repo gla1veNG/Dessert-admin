@@ -181,6 +181,10 @@ const _sfc_main = {
         item.stock = Number(item.stock);
       });
       AccConfig_answer.sku_val.value = sku_data.sku;
+      common_vendor.wx$1.navigateBack({ delta: 1 });
+    }
+    function cancel() {
+      common_vendor.wx$1.navigateBack({ delta: 1 });
     }
     return (_ctx, _cache) => {
       return {
@@ -245,7 +249,8 @@ const _sfc_main = {
         }),
         j: show.value,
         k: common_vendor.o(($event) => show.value = false),
-        l: common_vendor.o(preserve)
+        l: common_vendor.o(cancel),
+        m: common_vendor.o(preserve)
       };
     };
   }

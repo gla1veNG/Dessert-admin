@@ -54,24 +54,24 @@
 			<text>创建规格（可选）</text>
 			<image src="/static/detail/xiangyou-jiantou.svg" mode="widthFix"></image>
 		</view>
-		<view class="specs-image" style="display:none;">
+		<view class="specs-image" v-if="specs.specs_data.length === 0">
 			<image src="/static/detail/guige-img.jpg" mode="widthFix"></image>
 		</view>
 		<!-- 已有规格展示 -->
-		<view class="Se-specs S-flex">
+		<view class="Se-specs S-flex" v-if="specs.specs_data.length > 0" v-for="(item,index) in specs.specs_data" :key="index">
 			<view>
-				<image src="/static/detail/026.jpg" mode="aspectFill"></image>
+				<image :src="item.image" mode="aspectFill"></image>
 			</view>
 			<view class="S-top">
 				<view class="S-flex S-right">
-					<text>微辣</text>
+					<text v-for="(item_S,index_S) in item.att_data" :key="index_S">{{item_S.att_val}}</text>
 				</view>
 				<view class="S-flex S-right S-stock">
 					<text>库存</text>
-					<text>10件</text>
+					<text>{{item.stock}}件</text>
 				</view>
 			</view>
-			<view class="S-price">10</view>
+			<view class="S-price">{{item.price}}￥</view>
 		</view>
 	</view>
 	<!-- 详情图 -->
@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-	import {watch} from 'vue'
+	import {watch,reactive} from 'vue'
 	//调整规格页面
 	function juMp(){
 		wx.navigateTo({
@@ -102,8 +102,9 @@
 	}
 	//创建规格后携带值返回上一页面
 	import {sku_val} from '@/Acc-config/answer.js'
+	const specs = reactive({specs_data:[]});
 	watch(sku_val,(newVal,oldVal)=>{
-		console.log(newVal);
+		specs.specs_data = newVal;
 	})
 </script>
 <style>

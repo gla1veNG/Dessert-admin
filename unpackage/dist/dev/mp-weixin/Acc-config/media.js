@@ -48,7 +48,6 @@ class Upload {
           const res_url = await DB.getTempFileURL({
             fileList: [res.fileID]
           });
-          console.log(res_url);
           resolve(res_url.fileList[0].tempFileURL);
         },
         fail: (err) => {

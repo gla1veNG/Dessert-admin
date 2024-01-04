@@ -70,7 +70,7 @@
 	<view style="height: 300rpx;"></view>
 	<view class="newly-added-view">
 		<view class="Submit">
-			<text>取消</text>
+			<text @click="cancel">取消</text>
 			<text @click="preserve">保存</text>
 		</view>
 	</view>
@@ -290,6 +290,11 @@
 			item.stock = Number(item.stock);
 		})
 		sku_val.value = sku_data.sku;
+		wx.navigateBack({delta:1});
+	}
+	//取消
+	function cancel(){
+		wx.navigateBack({delta:1});
 	}
 </script>
 
