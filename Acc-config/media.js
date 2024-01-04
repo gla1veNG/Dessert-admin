@@ -1,3 +1,4 @@
+import {inIt} from '@/Acc-config/init.js'
 //及时反馈
 class Feedback{
 	constructor(title,icon="error"){
@@ -42,8 +43,20 @@ class Upload{
 		let imgion = route.lastIndexOf('.')
 		let eximg = route.slice(imgion);
 		let cloudpath = `${Date.now()}-${Math.floor(Math.random(0,1)*10000000)}${eximg}`;
+		let DB = await inIt();
 		return new Promise((resolve,reject)=>{
-			
+			DB.uploadFile({
+				cloudPath:'media/' + cloudpath,
+				filePath:route,//文件路径
+				success:async (res)=>{
+					const res_url = await DB.getTempFileURL({fileList:[res.fileID]});
+					console.log(res_url);
+					resolve(res_url.fileList[0].tempFileURL);
+				},
+				fail:err=>{
+					reject(err);
+				}
+			})
 		})
 	}
 }

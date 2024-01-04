@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+require("../../Acc-config/init.js");
 const _sfc_main = {
   __name: "specs",
   setup(__props) {
@@ -78,8 +79,8 @@ const _sfc_main = {
     }
     async function upLoad(index) {
       let local = await new AccConfig_media.Upload().image();
-      console.log(local);
-      await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
+      let res = await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
+      sku_data.sku[index].image = res;
     }
     return (_ctx, _cache) => {
       return {
@@ -118,7 +119,7 @@ const _sfc_main = {
             h: common_vendor.o(($event) => item.stock = $event.detail.value, index),
             i: item.image === ""
           }, item.image === "" ? {
-            j: common_vendor.o(($event) => upLoad(), index)
+            j: common_vendor.o(($event) => upLoad(index), index)
           } : {
             k: item.image
           }, {

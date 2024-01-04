@@ -150,8 +150,8 @@
 	//上传图片
 	async function upLoad(index){
 		let local =	await new Upload().image();
-		console.log(local);
-		await new Upload().cloud(local[0].tempFilePath)
+		let res = await new Upload().cloud(local[0].tempFilePath);
+		sku_data.sku[index].image = res;
 	}
 </script>
 
