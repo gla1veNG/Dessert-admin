@@ -1,70 +1,77 @@
-import {inIt} from '@/Acc-config/init.js'
+import {
+	inIt
+} from '@/Acc-config/init.js'
 //及时反馈
-class Feedback{
-	constructor(title,icon="error"){
+class Feedback {
+	constructor(title, icon = "error") {
 		this.title = title;
 		this.icon = icon;
 	}
 	//消息提示框
-	toast(){
+	toast() {
 		wx.showToast({
-				title:this.title,
-				icon:this.icon,
-				mask:true,
-				duration:800
+			title: this.title,
+			icon: this.icon,
+			mask: true,
+			duration: 800
 		})
 	}
 }
 
 //媒体处理
 // 媒体处理
-class Upload{
-	constructor(){}
-	
+class Upload {
+	constructor() {}
+
 	// 上传本地图片
-	image(count = 1, type = 'image'){
-		return new Promise((resolve,reject)=>{
+	image(count = 1, type = 'image') {
+		return new Promise((resolve, reject) => {
 			wx.chooseMedia({
-			  count,
-			  mediaType: [type],
-			  sourceType: ['album']
-			})
-			.then(res=>{
-				resolve(res.tempFiles)
-			})
-			.catch(err=>{
-				reject(err)
-			})
+					count,
+					mediaType: [type],
+					sourceType: ['album']
+				})
+				.then(res => {
+					resolve(res.tempFiles)
+				})
+				.catch(err => {
+					reject(err)
+				})
 		})
 	}
-	
+
 	// 上传图片或者视频到云存储
-	async cloud(route){
+	async cloud(route) {
 		let imgion = route.lastIndexOf('.')
 		let eximg = route.slice(imgion);
 		let cloudpath = `${Date.now()}-${Math.floor(Math.random(0,1)*10000000)}${eximg}`;
 		let DB = await inIt();
-		return new Promise((resolve,reject)=>{
+		return new Promise((resolve, reject) => {
 			DB.uploadFile({
-				cloudPath:'media/' + cloudpath,
-				filePath:route,//文件路径
-				success:async (res)=>{
-					const res_url = await DB.getTempFileURL({fileList:[res.fileID]});
+				cloudPath: 'media/' + cloudpath,
+				filePath: route, //文件路径
+				success: async (res) => {
+					const res_url = await DB.getTempFileURL({
+						fileList: [res.fileID]
+					});
 					console.log(res_url);
 					resolve(res_url.fileList[0].tempFileURL);
 				},
-				fail:err=>{
+				fail: err => {
 					reject(err);
 				}
 			})
 		})
 	}
 	//预览图片
-	preview(image,arr){
+	preview(image, arr) {
 		wx.previewImage({
-			current:image,//当前显示图片的http链接
-			urls:arr //需要预览的图片http链接列表
+			current: image, //当前显示图片的http链接
+			urls: arr //需要预览的图片http链接列表
 		})
 	}
 }
-export {Feedback,Upload}
+export {
+	Feedback,
+	Upload
+}

@@ -45,7 +45,9 @@ class Upload {
         filePath: route,
         //文件路径
         success: async (res) => {
-          const res_url = await DB.getTempFileURL({ fileList: [res.fileID] });
+          const res_url = await DB.getTempFileURL({
+            fileList: [res.fileID]
+          });
           console.log(res_url);
           resolve(res_url.fileList[0].tempFileURL);
         },
