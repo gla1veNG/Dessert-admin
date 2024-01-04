@@ -91,6 +91,9 @@ const _sfc_main = {
     function dePicture(index) {
       sku_data.sku[index].image = "";
     }
+    function preview(image) {
+      new AccConfig_media.Upload().preview(image, [image]);
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),
@@ -130,13 +133,14 @@ const _sfc_main = {
           }, item.image === "" ? {
             j: common_vendor.o(($event) => upLoad(index), index)
           } : {
-            k: item.image
+            k: item.image,
+            l: common_vendor.o(($event) => preview(item.image), index)
           }, {
-            l: item.image != ""
+            m: item.image != ""
           }, item.image != "" ? {
-            m: common_vendor.o(($event) => dePicture(index), index)
+            n: common_vendor.o(($event) => dePicture(index), index)
           } : {}, {
-            n: index
+            o: index
           });
         }),
         e: sku_data.sku.length > 1,
