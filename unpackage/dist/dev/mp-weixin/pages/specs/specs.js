@@ -186,6 +186,12 @@ const _sfc_main = {
     function cancel() {
       common_vendor.wx$1.navigateBack({ delta: 1 });
     }
+    common_vendor.onLoad((event) => {
+      let Arr = JSON.parse(event.sku);
+      console.log(Arr);
+      if (Arr.length <= 0)
+        return false;
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => show.value = true),

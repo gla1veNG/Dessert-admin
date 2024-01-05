@@ -7,8 +7,9 @@ const _sfc_main = {
     const priceinv = common_vendor.reactive({ price: "", stock: "" });
     const { price, stock } = common_vendor.toRefs(priceinv);
     function juMp() {
+      let arr = JSON.stringify(specs.specs_data);
       common_vendor.wx$1.navigateTo({
-        url: "/pages/specs/specs"
+        url: "/pages/specs/specs?sku=" + arr
       });
     }
     const specs = common_vendor.reactive({ specs_data: [] });

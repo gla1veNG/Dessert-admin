@@ -296,6 +296,13 @@
 	function cancel(){
 		wx.navigateBack({delta:1});
 	}
+	//
+	import {onLoad} from '@dcloudio/uni-app'
+	onLoad((event)=>{
+		let Arr = JSON.parse(event.sku);
+		console.log(Arr);
+		if(Arr.length <= 0)return false;
+	})
 </script>
 
 <style>

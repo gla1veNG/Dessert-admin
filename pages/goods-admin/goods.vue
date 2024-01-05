@@ -100,8 +100,9 @@
 	
 	//跳转规格页面
 	function juMp(){
+		let arr = JSON.stringify(specs.specs_data);
 		wx.navigateTo({
-			url:'/pages/specs/specs'
+			url:'/pages/specs/specs?sku=' + arr
 		})
 	}
 	//创建规格后携带值返回上一页面
