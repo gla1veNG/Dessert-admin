@@ -39,12 +39,12 @@
 	<view class="specs-view price-stock">
 		<view>
 			<text>价格</text>
-			<input type="number" placeholder="请输入价格" placeholder-class="I-style" cursor-spacing="50">
+			<input type="number" v-model="price" :disabled="specs.specs_data.length > 0 ? true : false" placeholder="请输入价格" placeholder-class="I-style" cursor-spacing="50">
 			<text>￥</text>
 		</view>
 		<view>
 			<text>库存</text>
-			<input type="number" placeholder="请输入库存" placeholder-class="I-style" cursor-spacing="50">
+			<input type="number" v-model="stock" :disabled="specs.specs_data.length > 0 ? true : false" placeholder="请输入库存" placeholder-class="I-style" cursor-spacing="50">
 			<text>件</text>
 		</view>
 	</view>
@@ -93,8 +93,12 @@
 </template>
 
 <script setup>
-	import {watch,reactive} from 'vue'
-	//调整规格页面
+	import {watch,reactive,toRefs} from 'vue'
+	//价格和库存
+	const priceinv = reactive({price:'',stock:''});
+	const {price,stock} = toRefs(priceinv);
+	
+	//跳转规格页面
 	function juMp(){
 		wx.navigateTo({
 			url:'/pages/specs/specs'
@@ -105,6 +109,14 @@
 	const specs = reactive({specs_data:[]});
 	watch(sku_val,(newVal,oldVal)=>{
 		specs.specs_data = newVal;
+		//取规格里价格最小的作为封面展示
+		let SORT = newVal;
+		let min_price = SORT.sort((A,B)=>{return (A.price - B.price)});
+		priceinv.price = min_price[0].price;
+		//计算总库存
+		let STOCK = 0;
+		newVal.forEach(item => STOCK += item.stock);
+		priceinv.stock = STOCK;
 	})
 </script>
 <style>
