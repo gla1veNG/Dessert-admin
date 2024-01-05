@@ -65,26 +65,28 @@ const _sfc_main = {
       } : {}, {
         e: common_vendor.o(upImage),
         f: video.sto_video != ""
-      }, video.sto_video != "" ? {} : {}, {
-        g: video.sto_video === ""
-      }, video.sto_video === "" ? {
-        h: common_vendor.o(upVideo)
-      } : {}, {
-        i: video.sto_video != ""
       }, video.sto_video != "" ? {
-        j: video.sto_video
+        g: common_vendor.o(($event) => video.sto_video = "")
       } : {}, {
-        k: specs.specs_data.length > 0 ? true : false,
-        l: common_vendor.unref(price),
-        m: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
-        n: specs.specs_data.length > 0 ? true : false,
-        o: common_vendor.unref(stock),
-        p: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
-        q: specs.specs_data.length === 0
+        h: video.sto_video === ""
+      }, video.sto_video === "" ? {
+        i: common_vendor.o(upVideo)
+      } : {}, {
+        j: video.sto_video != ""
+      }, video.sto_video != "" ? {
+        k: video.sto_video
+      } : {}, {
+        l: specs.specs_data.length > 0 ? true : false,
+        m: common_vendor.unref(price),
+        n: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
+        o: specs.specs_data.length > 0 ? true : false,
+        p: common_vendor.unref(stock),
+        q: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
+        r: specs.specs_data.length === 0
       }, specs.specs_data.length === 0 ? {} : {}, {
-        r: specs.specs_data.length > 0
+        s: specs.specs_data.length > 0
       }, specs.specs_data.length > 0 ? {
-        s: common_vendor.f(specs.specs_data, (item, index, i0) => {
+        t: common_vendor.f(specs.specs_data, (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.f(item.att_data, (item_S, index_S, i1) => {
@@ -99,7 +101,7 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        t: common_vendor.o(juMp)
+        v: common_vendor.o(juMp)
       });
     };
   }

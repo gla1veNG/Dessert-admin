@@ -16,14 +16,14 @@
 	<view class="goods-top goods-video">
 		<view class="video-title">
 			<text>上传短视频（可选）</text>
-			<image src="/static/detail/shanchu.svg" v-if="video.sto_video != ''"></image>
+			<image src="/static/detail/shanchu.svg" v-if="video.sto_video != ''" @click="video.sto_video = ''"></image>
 		</view>
 		<view class="goods-image" v-if="video.sto_video === ''">
 			<view>
 				<image src="/static/detail/shuxing-img.png" mode="aspectFill" @click="upVideo"></image>
 			</view>
 		</view>
-		<video v-if="video.sto_video != ''" :src="video.sto_video"></video>
+		<video v-if="video.sto_video != ''" :src="video.sto_video" object-fit="cover"></video>
 	</view>
 	<!-- 所属分类 -->
 	<view class="specs-view">
