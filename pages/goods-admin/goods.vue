@@ -1,13 +1,13 @@
 <template>
 	<!-- 上传图片 -->
 	<view class="goods-top">
-		<view><input type="text" placeholder="请输入商品标题" placeholder-class="pl-text" /></view>
+		<view><input type="text" v-model="cover.goods_title" placeholder="请输入商品标题" placeholder-class="pl-text" /></view>
 		<view class="goods-image">
-			<view class="upload-Image">
-				<image src="/static/detail/026.jpg" mode="aspectFill"></image>
+			<view class="upload-Image" v-if="cover.sto_image.length > 0" v-for="(item,index) in cover.sto_image" :key="index">
+				<image :src="item.image" mode="aspectFill"></image>
 				<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
 			</view>
-			<view>
+			<view @click="upImage">
 				<image src="/static/detail/shuxing-img.png" mode="aspectFill"></image>
 			</view>
 		</view>
@@ -119,6 +119,15 @@
 		newVal.forEach(item => STOCK += item.stock);
 		priceinv.stock = STOCK;
 	})
+	//上传图片
+	import {Feedback,Upload} from '@/Acc-config/media.js'
+	const cover = reactive({goods_title:'',sto_image:[]})
+	async function upImage(){
+		const local = await new Upload().image(9)
+		local.forEach(item=>{
+			cover.sto_image.push({image:item.tempFilePath})
+		})
+	}
 </script>
 <style>
 	page {

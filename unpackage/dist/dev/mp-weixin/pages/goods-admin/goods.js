@@ -1,6 +1,8 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_answer = require("../../Acc-config/answer.js");
+const AccConfig_media = require("../../Acc-config/media.js");
+require("../../Acc-config/init.js");
 const _sfc_main = {
   __name: "goods",
   setup(__props) {
@@ -24,19 +26,38 @@ const _sfc_main = {
       newVal.forEach((item) => STOCK += item.stock);
       priceinv.stock = STOCK;
     });
+    const cover = common_vendor.reactive({ goods_title: "", sto_image: [] });
+    async function upImage() {
+      const local = await new AccConfig_media.Upload().image(9);
+      local.forEach((item) => {
+        cover.sto_image.push({ image: item.tempFilePath });
+      });
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: specs.specs_data.length > 0 ? true : false,
-        b: common_vendor.unref(price),
-        c: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
-        d: specs.specs_data.length > 0 ? true : false,
-        e: common_vendor.unref(stock),
-        f: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
-        g: specs.specs_data.length === 0
+        a: cover.goods_title,
+        b: common_vendor.o(($event) => cover.goods_title = $event.detail.value),
+        c: cover.sto_image.length > 0
+      }, cover.sto_image.length > 0 ? {
+        d: common_vendor.f(cover.sto_image, (item, index, i0) => {
+          return {
+            a: item.image,
+            b: index
+          };
+        })
+      } : {}, {
+        e: common_vendor.o(upImage),
+        f: specs.specs_data.length > 0 ? true : false,
+        g: common_vendor.unref(price),
+        h: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
+        i: specs.specs_data.length > 0 ? true : false,
+        j: common_vendor.unref(stock),
+        k: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
+        l: specs.specs_data.length === 0
       }, specs.specs_data.length === 0 ? {} : {}, {
-        h: specs.specs_data.length > 0
+        m: specs.specs_data.length > 0
       }, specs.specs_data.length > 0 ? {
-        i: common_vendor.f(specs.specs_data, (item, index, i0) => {
+        n: common_vendor.f(specs.specs_data, (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.f(item.att_data, (item_S, index_S, i1) => {
@@ -51,7 +72,7 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        j: common_vendor.o(juMp)
+        o: common_vendor.o(juMp)
       });
     };
   }
