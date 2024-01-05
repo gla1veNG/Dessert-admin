@@ -199,6 +199,8 @@ const _sfc_main = {
       } else if (Arr[0].att_data.length === 2) {
         Sto_att.attobj.push({ att: "", title: 3 });
       }
+      subMit();
+      sku_data.sku = Arr;
     });
     return (_ctx, _cache) => {
       return {
