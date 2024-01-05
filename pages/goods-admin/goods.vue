@@ -27,10 +27,10 @@
 	</view>
 	<!-- 所属分类 -->
 	<view class="specs-view">
-		<picker mode="selector">
+		<picker mode="selector" :range="sortArray" range-key="sort_name" @change="changeEnd">
 			<view class="sort-title specs-title">
 				<text>所属分类</text>
-				<text>膨化食品</text>
+				<text>{{sort_value}}</text>
 				<image src="/static/detail/xiangyou-jiantou.svg" mode="widthFix"></image>
 			</view>
 		</picker>
@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-	import {watch,reactive,toRefs} from 'vue'
+	import {watch,reactive,toRefs,onMounted} from 'vue'
 	//价格和库存
 	const priceinv = reactive({price:'',stock:''});
 	const {price,stock} = toRefs(priceinv);
@@ -143,6 +143,24 @@
 	 async function upVideo(){
 		const local = await new Upload().image(1,'video');
 		video.sto_video = local[0].tempFilePath;
+	}
+	//所属分类
+	import {inIt} from '@/Acc-config/init.js'
+	onMounted(async()=>{
+		let DB = await inIt();
+		const res = await DB.database().collection('goods_sort').field({_openid:false}).get();
+		sortdata.sortArray = res.data;
+	})
+	const sortdata = reactive({
+		sortArray:[],
+		sort_value:'',
+		sort_id:''//分类id，用于提交数据库时对选中的分类下的 quantity++
+	})
+	const {sortArray,sort_value} = toRefs(sortdata);
+	
+	function changeEnd(e){
+		sortdata.sort_value = sortdata.sortArray[e.detail.value].sort_name;
+		sortdata.sort_id = sortdata.sortArray[e.detail.value]._id;
 	}
 </script>
 <style>

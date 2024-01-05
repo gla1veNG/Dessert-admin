@@ -2,7 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_answer = require("../../Acc-config/answer.js");
 const AccConfig_media = require("../../Acc-config/media.js");
-require("../../Acc-config/init.js");
+const AccConfig_init = require("../../Acc-config/init.js");
 const _sfc_main = {
   __name: "goods",
   setup(__props) {
@@ -48,6 +48,22 @@ const _sfc_main = {
       const local = await new AccConfig_media.Upload().image(1, "video");
       video.sto_video = local[0].tempFilePath;
     }
+    common_vendor.onMounted(async () => {
+      let DB = await AccConfig_init.inIt();
+      const res = await DB.database().collection("goods_sort").field({ _openid: false }).get();
+      sortdata.sortArray = res.data;
+    });
+    const sortdata = common_vendor.reactive({
+      sortArray: [],
+      sort_value: "",
+      sort_id: ""
+      //分类id，用于提交数据库时对选中的分类下的 quantity++
+    });
+    const { sortArray, sort_value } = common_vendor.toRefs(sortdata);
+    function changeEnd(e) {
+      sortdata.sort_value = sortdata.sortArray[e.detail.value].sort_name;
+      sortdata.sort_id = sortdata.sortArray[e.detail.value]._id;
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -76,17 +92,20 @@ const _sfc_main = {
       }, video.sto_video != "" ? {
         k: video.sto_video
       } : {}, {
-        l: specs.specs_data.length > 0 ? true : false,
-        m: common_vendor.unref(price),
-        n: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
+        l: common_vendor.t(common_vendor.unref(sort_value)),
+        m: common_vendor.unref(sortArray),
+        n: common_vendor.o(changeEnd),
         o: specs.specs_data.length > 0 ? true : false,
-        p: common_vendor.unref(stock),
-        q: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
-        r: specs.specs_data.length === 0
+        p: common_vendor.unref(price),
+        q: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
+        r: specs.specs_data.length > 0 ? true : false,
+        s: common_vendor.unref(stock),
+        t: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
+        v: specs.specs_data.length === 0
       }, specs.specs_data.length === 0 ? {} : {}, {
-        s: specs.specs_data.length > 0
+        w: specs.specs_data.length > 0
       }, specs.specs_data.length > 0 ? {
-        t: common_vendor.f(specs.specs_data, (item, index, i0) => {
+        x: common_vendor.f(specs.specs_data, (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.f(item.att_data, (item_S, index_S, i1) => {
@@ -101,7 +120,7 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        v: common_vendor.o(juMp)
+        y: common_vendor.o(juMp)
       });
     };
   }
