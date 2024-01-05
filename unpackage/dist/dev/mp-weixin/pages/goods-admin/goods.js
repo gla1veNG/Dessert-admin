@@ -43,6 +43,11 @@ const _sfc_main = {
       });
       new AccConfig_media.Upload().preview(image, arr);
     }
+    const video = common_vendor.reactive({ sto_video: "" });
+    async function upVideo() {
+      const local = await new AccConfig_media.Upload().image(1, "video");
+      video.sto_video = local[0].tempFilePath;
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -59,17 +64,27 @@ const _sfc_main = {
         })
       } : {}, {
         e: common_vendor.o(upImage),
-        f: specs.specs_data.length > 0 ? true : false,
-        g: common_vendor.unref(price),
-        h: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
-        i: specs.specs_data.length > 0 ? true : false,
-        j: common_vendor.unref(stock),
-        k: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
-        l: specs.specs_data.length === 0
+        f: video.sto_video != ""
+      }, video.sto_video != "" ? {} : {}, {
+        g: video.sto_video === ""
+      }, video.sto_video === "" ? {
+        h: common_vendor.o(upVideo)
+      } : {}, {
+        i: video.sto_video != ""
+      }, video.sto_video != "" ? {
+        j: video.sto_video
+      } : {}, {
+        k: specs.specs_data.length > 0 ? true : false,
+        l: common_vendor.unref(price),
+        m: common_vendor.o(($event) => common_vendor.isRef(price) ? price.value = $event.detail.value : null),
+        n: specs.specs_data.length > 0 ? true : false,
+        o: common_vendor.unref(stock),
+        p: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
+        q: specs.specs_data.length === 0
       }, specs.specs_data.length === 0 ? {} : {}, {
-        m: specs.specs_data.length > 0
+        r: specs.specs_data.length > 0
       }, specs.specs_data.length > 0 ? {
-        n: common_vendor.f(specs.specs_data, (item, index, i0) => {
+        s: common_vendor.f(specs.specs_data, (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.f(item.att_data, (item_S, index_S, i1) => {
@@ -84,7 +99,7 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        o: common_vendor.o(juMp)
+        t: common_vendor.o(juMp)
       });
     };
   }

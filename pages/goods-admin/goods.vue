@@ -16,14 +16,14 @@
 	<view class="goods-top goods-video">
 		<view class="video-title">
 			<text>上传短视频（可选）</text>
-			<image src="/static/detail/shanchu.svg"></image>
+			<image src="/static/detail/shanchu.svg" v-if="video.sto_video != ''"></image>
 		</view>
-		<view class="goods-image">
+		<view class="goods-image" v-if="video.sto_video === ''">
 			<view>
-				<image src="/static/detail/shuxing-img.png" mode="aspectFill"></image>
+				<image src="/static/detail/shuxing-img.png" mode="aspectFill" @click="upVideo"></image>
 			</view>
 		</view>
-		<video style="display:none;"></video>
+		<video v-if="video.sto_video != ''" :src="video.sto_video"></video>
 	</view>
 	<!-- 所属分类 -->
 	<view class="specs-view">
@@ -123,7 +123,7 @@
 	import {Feedback,Upload} from '@/Acc-config/media.js'
 	const cover = reactive({goods_title:'',sto_image:[]})
 	async function upImage(){
-		const local = await new Upload().image(9)
+		const local = await new Upload().image(9);
 		local.forEach(item=>{
 			cover.sto_image.push({image:item.tempFilePath})
 		})
@@ -137,6 +137,12 @@
 		let arr = [];
 		cover.sto_image.forEach(item=>{arr.push(item.image)});
 		new Upload().preview(image,arr);
+	}
+	//上传短视频
+	const video = reactive({sto_video:''});
+	 async function upVideo(){
+		const local = await new Upload().image(1,'video');
+		video.sto_video = local[0].tempFilePath;
 	}
 </script>
 <style>
