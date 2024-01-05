@@ -4,7 +4,7 @@
 		<view><input type="text" v-model="cover.goods_title" placeholder="请输入商品标题" placeholder-class="pl-text" /></view>
 		<view class="goods-image">
 			<view class="upload-Image" v-if="cover.sto_image.length > 0" v-for="(item,index) in cover.sto_image" :key="index">
-				<image :src="item.image" mode="aspectFill"></image>
+				<image :src="item.image" mode="aspectFill" @click="preView(item.image)"></image>
 				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" @click="deleteImg(index)"></image>
 			</view>
 			<view @click="upImage">
@@ -131,6 +131,12 @@
 	//删除横幅
 	function deleteImg(index){
 		cover.sto_image.splice(index,1);
+	}
+	//预览横幅图片
+	function preView(image){
+		let arr = [];
+		cover.sto_image.forEach(item=>{arr.push(item.image)});
+		new Upload().preview(image,arr);
 	}
 </script>
 <style>

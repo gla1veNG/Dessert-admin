@@ -36,6 +36,13 @@ const _sfc_main = {
     function deleteImg(index) {
       cover.sto_image.splice(index, 1);
     }
+    function preView(image) {
+      let arr = [];
+      cover.sto_image.forEach((item) => {
+        arr.push(item.image);
+      });
+      new AccConfig_media.Upload().preview(image, arr);
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -45,8 +52,9 @@ const _sfc_main = {
         d: common_vendor.f(cover.sto_image, (item, index, i0) => {
           return {
             a: item.image,
-            b: common_vendor.o(($event) => deleteImg(index), index),
-            c: index
+            b: common_vendor.o(($event) => preView(item.image), index),
+            c: common_vendor.o(($event) => deleteImg(index), index),
+            d: index
           };
         })
       } : {}, {
