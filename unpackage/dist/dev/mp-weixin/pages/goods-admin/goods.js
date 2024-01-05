@@ -33,6 +33,9 @@ const _sfc_main = {
         cover.sto_image.push({ image: item.tempFilePath });
       });
     }
+    function deleteImg(index) {
+      cover.sto_image.splice(index, 1);
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -42,7 +45,8 @@ const _sfc_main = {
         d: common_vendor.f(cover.sto_image, (item, index, i0) => {
           return {
             a: item.image,
-            b: index
+            b: common_vendor.o(($event) => deleteImg(index), index),
+            c: index
           };
         })
       } : {}, {

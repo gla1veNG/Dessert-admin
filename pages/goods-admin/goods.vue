@@ -5,7 +5,7 @@
 		<view class="goods-image">
 			<view class="upload-Image" v-if="cover.sto_image.length > 0" v-for="(item,index) in cover.sto_image" :key="index">
 				<image :src="item.image" mode="aspectFill"></image>
-				<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
+				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" @click="deleteImg(index)"></image>
 			</view>
 			<view @click="upImage">
 				<image src="/static/detail/shuxing-img.png" mode="aspectFill"></image>
@@ -119,7 +119,7 @@
 		newVal.forEach(item => STOCK += item.stock);
 		priceinv.stock = STOCK;
 	})
-	//上传图片
+	//上传横幅图片
 	import {Feedback,Upload} from '@/Acc-config/media.js'
 	const cover = reactive({goods_title:'',sto_image:[]})
 	async function upImage(){
@@ -127,6 +127,10 @@
 		local.forEach(item=>{
 			cover.sto_image.push({image:item.tempFilePath})
 		})
+	}
+	//删除横幅
+	function deleteImg(index){
+		cover.sto_image.splice(index,1);
 	}
 </script>
 <style>
