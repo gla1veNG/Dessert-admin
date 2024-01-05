@@ -296,12 +296,22 @@
 	function cancel(){
 		wx.navigateBack({delta:1});
 	}
-	//
+	
+	
 	import {onLoad} from '@dcloudio/uni-app'
 	onLoad((event)=>{
 		let Arr = JSON.parse(event.sku);
-		console.log(Arr);
 		if(Arr.length <= 0)return false;
+		//把数据传给弹窗里的属性
+		const new_arr = Arr[0].att_data.map((item,index)=>{
+			return {att:item.att_name,title:index + 1}
+		})
+		Sto_att.attobj = new_arr;
+		if(Arr[0].att_data.length === 1){
+			Sto_att.attobj.push({att:'',title:2},{att:'',title:3}); 
+		}else if(Arr[0].att_data.length === 2){
+			Sto_att.attobj.push({att:'',title:3});
+		}
 	})
 </script>
 

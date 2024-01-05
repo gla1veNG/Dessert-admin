@@ -188,9 +188,17 @@ const _sfc_main = {
     }
     common_vendor.onLoad((event) => {
       let Arr = JSON.parse(event.sku);
-      console.log(Arr);
       if (Arr.length <= 0)
         return false;
+      const new_arr = Arr[0].att_data.map((item, index) => {
+        return { att: item.att_name, title: index + 1 };
+      });
+      Sto_att.attobj = new_arr;
+      if (Arr[0].att_data.length === 1) {
+        Sto_att.attobj.push({ att: "", title: 2 }, { att: "", title: 3 });
+      } else if (Arr[0].att_data.length === 2) {
+        Sto_att.attobj.push({ att: "", title: 3 });
+      }
     });
     return (_ctx, _cache) => {
       return {
