@@ -82,6 +82,28 @@ const _sfc_main = {
       new AccConfig_media.Upload().preview(image, arr);
     }
     function subMit() {
+      switch (true) {
+        case cover.goods_title === "":
+          new AccConfig_media.Feedback("请填写商品标题").toast();
+          break;
+        case cover.sto_image.length === 0:
+          new AccConfig_media.Feedback("请填写商品图片").toast();
+          break;
+        case sortdata.sort_value === "":
+          new AccConfig_media.Feedback("请选择分类").toast();
+          break;
+        case priceinv.price === "":
+          new AccConfig_media.Feedback("请填写商品价格").toast();
+          break;
+        case priceinv.stock === "":
+          new AccConfig_media.Feedback("请填写商品库存").toast();
+          break;
+        case detail.sto_detail.length === 0:
+          new AccConfig_media.Feedback("请填写商品详情图片").toast();
+          break;
+        default:
+          new AccConfig_media.Feedback("商品上架成功", "success").toast();
+      }
     }
     return (_ctx, _cache) => {
       return common_vendor.e({

@@ -182,7 +182,27 @@
 	}
 	//提交校验
 	function subMit(){
-		
+		switch(true){
+			case cover.goods_title === '' : new Feedback('请填写商品标题').toast();
+			break;
+			
+			case cover.sto_image.length === 0 : new Feedback('请填写商品图片').toast();
+			break;
+			
+			case sortdata.sort_value === '' : new Feedback('请选择分类').toast();
+			break;
+			
+			case priceinv.price === '' : new Feedback('请填写商品价格').toast();
+			break;
+			
+			case priceinv.stock === '' : new Feedback('请填写商品库存').toast();
+			break;
+			
+			case detail.sto_detail.length === 0 : new Feedback('请填写商品详情图片').toast();
+			break;
+			
+			default : new Feedback('商品上架成功','success').toast();
+		}
 	}
 </script>
 <style>
