@@ -106,7 +106,36 @@ const _sfc_main = {
       }
     }
     async function database() {
-      await new AccConfig_media.Upload().multi(cover.sto_image, "image");
+      common_vendor.wx$1.showLoading({ title: "商品上架中", mask: true });
+      let res_banner = await new AccConfig_media.Upload().multi(cover.sto_image, "image");
+      let res_detail = await new AccConfig_media.Upload().multi(detail.sto_detail, "image");
+      let res_video = video.sto_video === "" ? "" : await new AccConfig_media.Upload().cloud(video.sto_video);
+      let obj = {
+        goods_title: cover.goods_title,
+        goods_banner: res_banner,
+        goods_cover: res_banner[0].image,
+        video_url: res_video,
+        category: sortdata.sort_value,
+        goods_price: Number(priceinv.price),
+        goods_stock: Number(priceinv.stock),
+        sku: specs.specs_data.length === 0 ? false : true,
+        goods_details: res_detail,
+        sold: 0,
+        shelves: true,
+        seckill: false
+      };
+      try {
+        let DB = await AccConfig_init.inIt();
+        const res = await DB.database().collection("goods").add({ data: obj });
+        if (specs.specs_data.length > 0) {
+          await DB.database().collection("sku_data").add({ data: { sku_id: res._id, sku: specs.specs_data } });
+        }
+        const _ = DB.database().command;
+        await DB.database().collection("goods_sort").doc(sortdata.sort_id).update({ data: { quantity: _.inc(1) } });
+        new AccConfig_media.Feedback("上架商品成功", "success").toast();
+      } catch (e) {
+        new AccConfig_media.Feedback("提交数据失败").toast();
+      }
     }
     return (_ctx, _cache) => {
       return common_vendor.e({

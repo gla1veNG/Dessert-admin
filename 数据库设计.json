@@ -10,6 +10,10 @@
 
 /*商品数据库 goods*/
 规则: 
+{
+  "read": true,
+  "write": true
+}
 
 [
 	{
@@ -26,5 +30,27 @@
 		sold:'商品已售数量',
 		shelves:'商品上架与否 true or false',
 		seckill:'该商品是否参与秒杀 true or false'
+	}
+],
+
+/*规格数据库 sku_data*/
+规则:
+{
+  "read": true,
+  "write": true
+}
+[
+	{
+		sku_id:'关联哪个商品的id',
+		sku:[{
+			att_data:[
+				{att_name: "口味", att_val: "微辣"},
+				{att_name: "颜色", att_val: "黑色"}
+			],
+			image: "图片链接",
+			price: 11,
+			stock: 200,
+			title: 1
+		}]
 	}
 ]

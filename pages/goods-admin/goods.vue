@@ -206,8 +206,41 @@
 	}
 	//提交到数据库
 	async function database(){
+		wx.showLoading({title:'商品上架中',mask:true});
 		//上传横幅
 		let res_banner = await new Upload().multi(cover.sto_image,'image');
+		//上传详情图
+		let res_detail = await new Upload().multi(detail.sto_detail,'image');
+		//短视频，视频存在才上传
+		let res_video = video.sto_video === '' ? '' : await new Upload().cloud(video.sto_video);
+		let obj = {
+			goods_title:cover.goods_title,
+			goods_banner:res_banner,
+			goods_cover:res_banner[0].image,
+			video_url:res_video,
+			category:sortdata.sort_value,
+			goods_price:Number(priceinv.price),
+			goods_stock:Number(priceinv.stock),
+			sku:specs.specs_data.length === 0 ? false : true,
+			goods_details:res_detail,
+			sold:0,
+			shelves:true,
+			seckill:false
+		}
+		try{
+			let DB =  await inIt();
+			const res = await DB.database().collection('goods').add({data:obj});
+			//获取商品的_id,上传 sku
+			if(specs.specs_data.length > 0){
+				await DB.database().collection('sku_data').add({data:{sku_id:res._id,sku:specs.specs_data}})
+			}
+			//对选择的分类下的数量++
+			const _ = DB.database().command;
+			await DB.database().collection('goods_sort').doc(sortdata.sort_id).update({data:{quantity:_.inc(1)}});
+			new Feedback('上架商品成功','success').toast();
+		}catch(e){
+			new Feedback('提交数据失败').toast();
+		}
 	}
 </script>
 <style>
