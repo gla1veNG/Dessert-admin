@@ -71,6 +71,9 @@ const _sfc_main = {
         detail.sto_detail.push({ image: item.tempFilePath });
       });
     }
+    function deleteDeta(index) {
+      detail.sto_detail.splice(index, 1);
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -133,7 +136,8 @@ const _sfc_main = {
         A: common_vendor.f(common_vendor.unref(detail).sto_detail, (item, index, i0) => {
           return {
             a: item.image,
-            b: index
+            b: common_vendor.o(($event) => deleteDeta(index), index),
+            c: index
           };
         })
       } : {}, {

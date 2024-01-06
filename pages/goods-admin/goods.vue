@@ -79,7 +79,7 @@
 		<view class="specs-title"><text>商品详情</text></view>
 		<view class="detail-image" v-if="detail.sto_detail.length > 0" v-for="(item,index) in detail.sto_detail" :key="index">
 			<image :src="item.image" mode="widthFix"></image>
-			<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
+			<image src="/static/detail/shanchu-goods.svg" mode="widthFix" @click="deleteDeta(index)"></image>
 		</view>
 		<view class="specs-image">
 			<image src="../../static/detail/shpin-img.jpg" mode="widthFix" @click="upDetail"></image>
@@ -169,6 +169,10 @@
 		local.forEach(item=>{
 			detail.sto_detail.push({image:item.tempFilePath})
 		})
+	}
+	//删除商品详情图
+	function deleteDeta(index){
+		detail.sto_detail.splice(index,1);
 	}
 </script>
 <style>
