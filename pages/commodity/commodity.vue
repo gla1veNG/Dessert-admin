@@ -43,6 +43,10 @@
 		let DB = await inIt();
 		const _ = DB.database().command;
 		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get();
+		//请求商品数据
+		const field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true};
+		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get();
+		console.log(res_goods);
 	}
 </script>
 
