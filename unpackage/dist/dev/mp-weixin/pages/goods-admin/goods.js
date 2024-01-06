@@ -64,6 +64,13 @@ const _sfc_main = {
       sortdata.sort_value = sortdata.sortArray[e.detail.value].sort_name;
       sortdata.sort_id = sortdata.sortArray[e.detail.value]._id;
     }
+    let detail = common_vendor.reactive({ sto_detail: [] });
+    async function upDetail() {
+      const local = await new AccConfig_media.Upload().image(9);
+      local.forEach((item) => {
+        detail.sto_detail.push({ image: item.tempFilePath });
+      });
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -120,7 +127,17 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        y: common_vendor.o(juMp)
+        y: common_vendor.o(juMp),
+        z: common_vendor.unref(detail).sto_detail.length > 0
+      }, common_vendor.unref(detail).sto_detail.length > 0 ? {
+        A: common_vendor.f(common_vendor.unref(detail).sto_detail, (item, index, i0) => {
+          return {
+            a: item.image,
+            b: index
+          };
+        })
+      } : {}, {
+        B: common_vendor.o(upDetail)
       });
     };
   }

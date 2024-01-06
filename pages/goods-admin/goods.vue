@@ -77,12 +77,12 @@
 	<!-- 详情图 -->
 	<view class="specs-view">
 		<view class="specs-title"><text>商品详情</text></view>
-		<view class="detail-image">
-			<image src="/static/detail/026.jpg" mode="widthFix"></image>
+		<view class="detail-image" v-if="detail.sto_detail.length > 0" v-for="(item,index) in detail.sto_detail" :key="index">
+			<image :src="item.image" mode="widthFix"></image>
 			<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
 		</view>
 		<view class="specs-image">
-			<image src="../../static/detail/shpin-img.jpg" mode="widthFix"></image>
+			<image src="../../static/detail/shpin-img.jpg" mode="widthFix" @click="upDetail"></image>
 		</view>
 	</view>
 	<!-- 底部 -->
@@ -161,6 +161,14 @@
 	function changeEnd(e){
 		sortdata.sort_value = sortdata.sortArray[e.detail.value].sort_name;
 		sortdata.sort_id = sortdata.sortArray[e.detail.value]._id;
+	}
+	//上传详情图
+	let detail = reactive({sto_detail:[]});
+	async function upDetail(){
+		const local = await new Upload().image(9);
+		local.forEach(item=>{
+			detail.sto_detail.push({image:item.tempFilePath})
+		})
 	}
 </script>
 <style>
