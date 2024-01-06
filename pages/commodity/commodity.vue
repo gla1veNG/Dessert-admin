@@ -2,25 +2,27 @@
 	<view class="sort-view">
 		<!-- 左边 -->
 		<view class="sort-left">
-			<text>膨化食品</text>
+			<text v-for="(item,index) in sort" :key="index">{{item.sort_name}}</text>
 		</view>
 		<!-- 右边 -->
 		<view class="sort-right">
-			<view class="Commodity">
+			<view class="Commodity" v-for="(item,index) in goods" :key="index">
 				<view class="Com-image">
-					<image src="/static/detail/shuxing-img.png" mode="aspectFill"></image>
+					<image :src="item.goods_cover" mode="aspectFill"></image>
 				</view>
 				<view class="Com-price">
-					<text class="Com-title over-text">这是标题</text>
-					<text class="stock-view">库存 100</text>
-					<text class="Real-price">10.00</text>
+					<text class="Com-title over-text">{{item.goods_title}}</text>
+					<text class="stock-view">库存{{item.stock}}</text>
+					<text class="Real-price">{{item.goods_price}}</text>
 					<view class="Button-rig">
-						<text class="shelf-true">下架</text>
+						<text class="shelf-true" v-if="item.shelves">下架</text>
+						<text class="shelf-true" v-else>已下架</text>
 					</view>
 				</view>
 			</view>
 		</view>
 	</view>
+	<view style="height: 100rpx;"></view>
 	<!-- 底部 -->
 	<view class="manage">
 		<text>管理分类</text>
@@ -29,7 +31,7 @@
 </template>
 
 <script setup>
-	import {onMounted} from 'vue'
+	import {reactive,toRefs} from 'vue'
 	import {onShow} from '@dcloudio/uni-app'
 	import {inIt} from '@/Acc-config/init.js'
 	
@@ -37,6 +39,13 @@
 	onShow(()=>{
 		gooDs();
 	})
+	
+	const data = reactive({
+		sort:[],//分类数据
+		goods:[]//商品数据
+	})
+	
+	const {sort,goods} = toRefs(data)
 	//请求数据库数据
 	async function gooDs(){
 		//请求分类的数据
@@ -46,7 +55,8 @@
 		//请求商品数据
 		const field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true};
 		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get();
-		console.log(res_goods);
+		data.sort = res_sort.data;
+		data.goods= res_goods.data;
 	}
 </script>
 
