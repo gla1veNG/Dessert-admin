@@ -17,10 +17,8 @@ class Feedback {
 		})
 	}
 }
-
-//媒体处理
 // 媒体处理
-class Upload {
+class Upload{
 	constructor() {}
 
 	// 上传本地图片
@@ -62,6 +60,20 @@ class Upload {
 			})
 		})
 	}
+	//多图上传
+		multi(uploads,key){
+			let storage = [];
+			return new Promise((resolve,reject)=>{
+				uploads.forEach(async item=>{
+					let nm = await this.cloud(item.image);
+					storage.push({[key] : nm});
+					//本地上传的图片数量 和 push 进 storage 的数量必须一致才会 resolve 回去
+					if(storage.length === uploads.length){
+						resolve(storage);
+					}
+				})
+			})
+		}
 	//预览图片
 	preview(image, arr) {
 		wx.previewImage({

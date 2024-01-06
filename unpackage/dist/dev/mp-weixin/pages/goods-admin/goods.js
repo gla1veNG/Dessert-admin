@@ -102,8 +102,11 @@ const _sfc_main = {
           new AccConfig_media.Feedback("请填写商品详情图片").toast();
           break;
         default:
-          new AccConfig_media.Feedback("商品上架成功", "success").toast();
+          database();
       }
+    }
+    async function database() {
+      await new AccConfig_media.Upload().multi(cover.sto_image, "image");
     }
     return (_ctx, _cache) => {
       return common_vendor.e({

@@ -56,6 +56,19 @@ class Upload {
       });
     });
   }
+  //多图上传
+  multi(uploads, key) {
+    let storage = [];
+    return new Promise((resolve, reject) => {
+      uploads.forEach(async (item) => {
+        let nm = await this.cloud(item.image);
+        storage.push({ [key]: nm });
+        if (storage.length === uploads.length) {
+          resolve(storage);
+        }
+      });
+    });
+  }
   //预览图片
   preview(image, arr) {
     common_vendor.wx$1.previewImage({

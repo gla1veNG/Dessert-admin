@@ -16,7 +16,7 @@
 		_id:'该商品的唯一标识,商品id',
 		goods_title:'商品标题',
 		goods_banner:[商品横幅],
-		goods_cover:'商品封面图',
+		goods_cover:'商品封面图,商品横幅的第一张图片作为封面图',
 		video_url:'短视频链接',
 		category:'所属分类',
 		goods_price:'商品价格',

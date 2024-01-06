@@ -201,8 +201,13 @@
 			case detail.sto_detail.length === 0 : new Feedback('请填写商品详情图片').toast();
 			break;
 			
-			default : new Feedback('商品上架成功','success').toast();
+			default : database();
 		}
+	}
+	//提交到数据库
+	async function database(){
+		//上传横幅
+		let res_banner = await new Upload().multi(cover.sto_image,'image');
 	}
 </script>
 <style>
