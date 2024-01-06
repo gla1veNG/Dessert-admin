@@ -2,7 +2,7 @@
 	<view class="sort-view">
 		<!-- 左边 -->
 		<view class="sort-left">
-			<text v-for="(item,index) in sort" :key="index">{{item.sort_name}}</text>
+			<text v-for="(item,index) in sort" :key="index" :class="{addto:index === num}" @click="seLect(index,item.sort_name,item._id)">{{item.sort_name}}</text>
 		</view>
 		<!-- 右边 -->
 		<view class="sort-right">
@@ -16,7 +16,7 @@
 					<text class="Real-price">{{item.goods_price}}</text>
 					<view class="Button-rig">
 						<text class="shelf-true" v-if="item.shelves">下架</text>
-						<text class="shelf-true" v-else>已下架</text>
+						<text class="shelf-false" v-else>已下架</text>
 					</view>
 				</view>
 			</view>
@@ -42,22 +42,37 @@
 	
 	const data = reactive({
 		sort:[],//分类数据
-		goods:[]//商品数据
+		goods:[],//商品数据
+		num:0,
+		sort_name:'',
+		sort_id:''
 	})
 	
-	const {sort,goods} = toRefs(data)
+	const {sort,goods,num} = toRefs(data)
 	//请求数据库数据
+	const field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true};
 	async function gooDs(){
 		//请求分类的数据
 		let DB = await inIt();
 		const _ = DB.database().command;
 		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get();
 		//请求商品数据
-		const field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true};
 		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get();
 		data.sort = res_sort.data;
 		data.goods= res_goods.data;
+		data.sort_name = res_sort.data[0].sort_name;
+		data.sort_id = res_sort.data[0]._id;
 	}
+	
+	//选中分类
+	async function seLect(index,sort_name,id){
+		data.num = index;
+		data.sort_name = sort_name;
+		data.sort_id = id;
+		let DB = await inIt();
+		const res_goods = await DB.database().collection('goods').where({category:sort_name}).limit(10).field(field_obj).get();
+		data.goods = res_goods.data;
+	}	
 </script>
 
 <style scoped>
@@ -83,7 +98,7 @@
 	font-size: 28rpx;
 }
 .addto{
-	background-color: #FFFFFF;
+	background-color: antiquewhite;
 	font-weight: bold;
 }
 /* 右边 */

@@ -10,17 +10,30 @@ const _sfc_main = {
     const data = common_vendor.reactive({
       sort: [],
       //分类数据
-      goods: []
+      goods: [],
       //商品数据
+      num: 0,
+      sort_name: "",
+      sort_id: ""
     });
-    const { sort, goods } = common_vendor.toRefs(data);
+    const { sort, goods, num } = common_vendor.toRefs(data);
+    const field_obj = { goods_title: true, goods_cover: true, goods_price: true, stock: true, shelves: true };
     async function gooDs() {
       let DB = await AccConfig_init.inIt();
       const _ = DB.database().command;
       const res_sort = await DB.database().collection("goods_sort").where({ quantity: _.gt(0) }).field({ sort_name: true }).get();
-      const field_obj = { goods_title: true, goods_cover: true, goods_price: true, stock: true, shelves: true };
       const res_goods = await DB.database().collection("goods").where({ category: res_sort.data[0].sort_name }).limit(10).field(field_obj).get();
       data.sort = res_sort.data;
+      data.goods = res_goods.data;
+      data.sort_name = res_sort.data[0].sort_name;
+      data.sort_id = res_sort.data[0]._id;
+    }
+    async function seLect(index, sort_name, id) {
+      data.num = index;
+      data.sort_name = sort_name;
+      data.sort_id = id;
+      let DB = await AccConfig_init.inIt();
+      const res_goods = await DB.database().collection("goods").where({ category: sort_name }).limit(10).field(field_obj).get();
       data.goods = res_goods.data;
     }
     return (_ctx, _cache) => {
@@ -28,7 +41,9 @@ const _sfc_main = {
         a: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
           return {
             a: common_vendor.t(item.sort_name),
-            b: index
+            b: index,
+            c: index === common_vendor.unref(num) ? 1 : "",
+            d: common_vendor.o(($event) => seLect(index, item.sort_name, item._id), index)
           };
         }),
         b: common_vendor.f(common_vendor.unref(goods), (item, index, i0) => {
