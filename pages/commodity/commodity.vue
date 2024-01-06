@@ -28,7 +28,22 @@
 	</view>
 </template>
 
-<script>
+<script setup>
+	import {onMounted} from 'vue'
+	import {onShow} from '@dcloudio/uni-app'
+	import {inIt} from '@/Acc-config/init.js'
+	
+	//只要页面跳转一次就会执行
+	onShow(()=>{
+		gooDs();
+	})
+	//请求数据库数据
+	async function gooDs(){
+		//请求分类的数据
+		let DB = await inIt();
+		const _ = DB.database().command;
+		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get();
+	}
 </script>
 
 <style scoped>
