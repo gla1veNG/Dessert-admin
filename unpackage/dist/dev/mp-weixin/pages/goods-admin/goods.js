@@ -74,6 +74,15 @@ const _sfc_main = {
     function deleteDeta(index) {
       detail.sto_detail.splice(index, 1);
     }
+    function previewDeta(image) {
+      let arr = [];
+      detail.sto_detail.forEach((item) => {
+        arr.push(item.image);
+      });
+      new AccConfig_media.Upload().preview(image, arr);
+    }
+    function subMit() {
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: cover.goods_title,
@@ -136,12 +145,14 @@ const _sfc_main = {
         A: common_vendor.f(common_vendor.unref(detail).sto_detail, (item, index, i0) => {
           return {
             a: item.image,
-            b: common_vendor.o(($event) => deleteDeta(index), index),
-            c: index
+            b: common_vendor.o(($event) => previewDeta(item.image), index),
+            c: common_vendor.o(($event) => deleteDeta(index), index),
+            d: index
           };
         })
       } : {}, {
-        B: common_vendor.o(upDetail)
+        B: common_vendor.o(upDetail),
+        C: common_vendor.o(subMit)
       });
     };
   }

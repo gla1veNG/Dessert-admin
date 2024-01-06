@@ -78,7 +78,7 @@
 	<view class="specs-view">
 		<view class="specs-title"><text>商品详情</text></view>
 		<view class="detail-image" v-if="detail.sto_detail.length > 0" v-for="(item,index) in detail.sto_detail" :key="index">
-			<image :src="item.image" mode="widthFix"></image>
+			<image :src="item.image" mode="widthFix" @click="previewDeta(item.image)"></image>
 			<image src="/static/detail/shanchu-goods.svg" mode="widthFix" @click="deleteDeta(index)"></image>
 		</view>
 		<view class="specs-image">
@@ -88,7 +88,7 @@
 	<!-- 底部 -->
 	<view style="height: 300rpx;"></view>
 	<view class="newly-added-view back">
-		<view class="newly-added">上架售卖</view>
+		<view class="newly-added" @click="subMit">上架售卖</view>
 	</view>
 </template>
 
@@ -173,6 +173,16 @@
 	//删除商品详情图
 	function deleteDeta(index){
 		detail.sto_detail.splice(index,1);
+	}
+	//预览详情图
+	function previewDeta(image){
+		let arr = [];
+		detail.sto_detail.forEach(item=>{arr.push(item.image)});
+		new Upload().preview(image,arr);
+	}
+	//提交校验
+	function subMit(){
+		
 	}
 </script>
 <style>
