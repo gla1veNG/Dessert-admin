@@ -2,6 +2,10 @@
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+if (!Math) {
+  Loading();
+}
+const Loading = () => "../public-view/loading.js";
 const _sfc_main = {
   __name: "commodity",
   setup(__props) {
@@ -18,7 +22,7 @@ const _sfc_main = {
       sort_id: ""
     });
     const { sort, goods, num } = common_vendor.toRefs(data);
-    const field_obj = { goods_title: true, goods_cover: true, goods_price: true, stock: true, shelves: true };
+    let field_obj = { goods_title: true, goods_cover: true, goods_price: true, stock: true, shelves: true };
     async function gooDs() {
       let DB = await AccConfig_init.inIt();
       const _ = DB.database().command;
@@ -28,6 +32,8 @@ const _sfc_main = {
       data.goods = res_goods.data;
       data.sort_name = res_sort.data[0].sort_name;
       data.sort_id = res_sort.data[0]._id;
+      data.num = 0;
+      page_n.value = 0;
     }
     async function seLect(index, sort_name, id) {
       data.num = index;
@@ -35,6 +41,7 @@ const _sfc_main = {
       data.sort_id = id;
       let DB = await AccConfig_init.inIt();
       const res_goods = await DB.database().collection("goods").where({ category: sort_name }).limit(10).field(field_obj).get();
+      console.log(res_goods);
       data.goods = res_goods.data;
     }
     async function shelf(id, index) {
@@ -48,13 +55,24 @@ const _sfc_main = {
         new AccConfig_media.Feedback("下架失败", "none").toast();
       }
     }
+    let loading = common_vendor.ref(false);
+    let page_n = common_vendor.ref(0);
+    common_vendor.onReachBottom(async () => {
+      loading.value = true;
+      page_n.value++;
+      let sk = page_n.value * 10;
+      let DB = await AccConfig_init.inIt();
+      const res_goods = await DB.database().collection("goods").where({ category: data.sort_name }).limit(10).skip(sk).field(field_obj).get();
+      data.goods = [...data.goods, ...res_goods.data];
+      loading.value = false;
+    });
     return (_ctx, _cache) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
           return {
             a: common_vendor.t(item.sort_name),
             b: index,
-            c: index === common_vendor.unref(num) ? 1 : "",
+            c: index == common_vendor.unref(num) ? 1 : "",
             d: common_vendor.o(($event) => seLect(index, item.sort_name, item._id), index)
           };
         }),
@@ -70,8 +88,12 @@ const _sfc_main = {
           } : {}, {
             g: index
           });
-        })
-      };
+        }),
+        c: common_vendor.unref(loading)
+      }, common_vendor.unref(loading) ? {} : {}, {
+        d: common_vendor.o((...args) => _ctx.rootSoRt && _ctx.rootSoRt(...args)),
+        e: common_vendor.o((...args) => _ctx.rootGoods && _ctx.rootGoods(...args))
+      });
     };
   }
 };

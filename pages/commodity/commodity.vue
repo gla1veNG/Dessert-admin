@@ -2,7 +2,10 @@
 	<view class="sort-view">
 		<!-- 左边 -->
 		<view class="sort-left">
-			<text v-for="(item,index) in sort" :key="index" :class="{addto:index === num}" @click="seLect(index,item.sort_name,item._id)">{{item.sort_name}}</text>
+			<text v-for="(item,index) in sort" :key="index"
+			:class="{addto:index == num}"
+			@click="seLect(index,item.sort_name,item._id)"
+			>{{item.sort_name}}</text>
 		</view>
 		<!-- 右边 -->
 		<view class="sort-right">
@@ -12,32 +15,36 @@
 				</view>
 				<view class="Com-price">
 					<text class="Com-title over-text">{{item.goods_title}}</text>
-					<text class="stock-view">库存{{item.stock}}</text>
-					<text class="Real-price">{{item.goods_price}}</text>
+					<text class="stock-view">库存 {{item.stock}}</text>
+					<text class="Real-price">¥{{item.goods_price}}</text>
 					<view class="Button-rig">
 						<text class="shelf-true" v-if="item.shelves" @click="shelf(item._id,index)">下架</text>
 						<text class="shelf-false" v-else>已下架</text>
 					</view>
 				</view>
 			</view>
+		<!-- 加载提示 -->
+		<view class="loading-hei">
+			<Loading v-if="loading"></Loading>
+		</view>
+		<view style="height: 100rpx;"></view>
 		</view>
 	</view>
-	<view style="height: 100rpx;"></view>
 	<!-- 底部 -->
 	<view class="manage">
-		<text>管理分类</text>
-		<text>添加商品</text>
+		<text @click="rootSoRt">管理分类</text>
+		<text @click="rootGoods">添加商品</text>
 	</view>
 </template>
 
 <script setup>
-	import {reactive,toRefs} from 'vue'
-	import {onShow} from '@dcloudio/uni-app'
+	import {reactive,toRefs,ref} from 'vue'
+	import {onShow,onReachBottom} from '@dcloudio/uni-app'
 	import {inIt} from '@/Acc-config/init.js'
+	import Loading from '@/pages/public-view/loading.vue'
 	
-	//只要页面跳转一次就会执行
 	onShow(()=>{
-		gooDs();
+		gooDs()
 	})
 	
 	const data = reactive({
@@ -47,46 +54,65 @@
 		sort_name:'',
 		sort_id:''
 	})
-	
 	const {sort,goods,num} = toRefs(data)
-	//请求数据库数据
-	const field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true};
+
+	// 请求数据库数据
+	let field_obj = {goods_title:true,goods_cover:true,goods_price:true,stock:true,shelves:true}
 	async function gooDs(){
-		//请求分类的数据
-		let DB = await inIt();
-		const _ = DB.database().command;
-		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get();
-		//请求商品数据
-		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get();
-		data.sort = res_sort.data;
-		data.goods= res_goods.data;
-		data.sort_name = res_sort.data[0].sort_name;
-		data.sort_id = res_sort.data[0]._id;
+		// 请求分类的数据
+		let DB = await inIt()
+		const _ = DB.database().command
+		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get()
+		// 请求商品数据
+		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get()
+		data.sort = res_sort.data
+		data.goods = res_goods.data
+		data.sort_name = res_sort.data[0].sort_name
+		data.sort_id = res_sort.data[0]._id
+		data.num = 0
+		page_n.value = 0
 	}
 	
-	//选中分类
+	// 选中分类
 	async function seLect(index,sort_name,id){
-		data.num = index;
-		data.sort_name = sort_name;
-		data.sort_id = id;
-		let DB = await inIt();
-		const res_goods = await DB.database().collection('goods').where({category:sort_name}).limit(10).field(field_obj).get();
-		data.goods = res_goods.data;
+		data.num = index
+		data.sort_name = sort_name
+		data.sort_id = id
+		let DB = await inIt()
+		const res_goods = await DB.database().collection('goods').where({category:sort_name}).limit(10).field(field_obj).get()
+		console.log(res_goods)
+		data.goods = res_goods.data
 	}
-	//下架
+	
+	// 下架
 	import {Feedback} from '@/Acc-config/media.js'
 	async function shelf(id,index){
-			let DB = await inIt();
-			try{
-				await DB.database().collection('goods').doc(id).update({data:{shelves:false}});
-				data.goods[index].shelves = false;
-				//下架之后该分类的数量自减
-				const _ = DB.database().command;
-				await DB.database().collection('goods_sort').doc(data.sort_id).update({data:{quantity:_.inc(-1)}});
-			}catch(e){
-				new Feedback('下架失败','none').toast();
-			}
+		let DB = await inIt()
+		try{
+			await DB.database().collection('goods').doc(id).update({data:{shelves:false}})
+			data.goods[index].shelves = false
+			// 下架之后对该分类的数量自减
+			const _ = DB.database().command
+			await DB.database().collection('goods_sort').doc(data.sort_id).update({data:{quantity: _.inc(-1)}})
+		}catch(e){
+			new Feedback('下架失败','none').toast()
 		}
+		
+		
+	}
+	
+	// 上拉加载
+	let loading = ref(false)
+	let page_n = ref(0)
+	onReachBottom(async()=>{
+		loading.value = true
+		page_n.value++
+		let sk = page_n.value * 10
+		let DB = await inIt()
+		const res_goods = await DB.database().collection('goods').where({category:data.sort_name}).limit(10).skip(sk).field(field_obj).get()
+		data.goods = [...data.goods,...res_goods.data]
+		loading.value = false
+	})
 </script>
 
 <style scoped>
