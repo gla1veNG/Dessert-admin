@@ -15,7 +15,7 @@
 					<text class="stock-view">库存{{item.stock}}</text>
 					<text class="Real-price">{{item.goods_price}}</text>
 					<view class="Button-rig">
-						<text class="shelf-true" v-if="item.shelves">下架</text>
+						<text class="shelf-true" v-if="item.shelves" @click="shelf(item._id,index)">下架</text>
 						<text class="shelf-false" v-else>已下架</text>
 					</view>
 				</view>
@@ -72,7 +72,21 @@
 		let DB = await inIt();
 		const res_goods = await DB.database().collection('goods').where({category:sort_name}).limit(10).field(field_obj).get();
 		data.goods = res_goods.data;
-	}	
+	}
+	//下架
+	import {Feedback} from '@/Acc-config/media.js'
+	async function shelf(id,index){
+			let DB = await inIt();
+			try{
+				await DB.database().collection('goods').doc(id).update({data:{shelves:false}});
+				data.goods[index].shelves = false;
+				//下架之后该分类的数量自减
+				const _ = DB.database().command;
+				await DB.database().collection('goods_sort').doc(data.sort_id).update({data:{quantity:_.inc(-1)}});
+			}catch(e){
+				new Feedback('下架失败','none').toast();
+			}
+		}
 </script>
 
 <style scoped>

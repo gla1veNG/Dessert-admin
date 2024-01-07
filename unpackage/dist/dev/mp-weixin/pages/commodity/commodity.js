@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
+const AccConfig_media = require("../../Acc-config/media.js");
 const _sfc_main = {
   __name: "commodity",
   setup(__props) {
@@ -36,6 +37,17 @@ const _sfc_main = {
       const res_goods = await DB.database().collection("goods").where({ category: sort_name }).limit(10).field(field_obj).get();
       data.goods = res_goods.data;
     }
+    async function shelf(id, index) {
+      let DB = await AccConfig_init.inIt();
+      try {
+        await DB.database().collection("goods").doc(id).update({ data: { shelves: false } });
+        data.goods[index].shelves = false;
+        const _ = DB.database().command;
+        await DB.database().collection("goods_sort").doc(data.sort_id).update({ data: { quantity: _.inc(-1) } });
+      } catch (e) {
+        new AccConfig_media.Feedback("下架失败", "none").toast();
+      }
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
@@ -53,8 +65,10 @@ const _sfc_main = {
             c: common_vendor.t(item.stock),
             d: common_vendor.t(item.goods_price),
             e: item.shelves
-          }, item.shelves ? {} : {}, {
-            f: index
+          }, item.shelves ? {
+            f: common_vendor.o(($event) => shelf(item._id, index), index)
+          } : {}, {
+            g: index
           });
         })
       };
