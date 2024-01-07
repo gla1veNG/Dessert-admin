@@ -8,6 +8,14 @@
 			}
 		},
 		{
+			"path": "pages/goods-list/list",
+			"style": {
+				"navigationBarTitleText": "选择商品",
+				"navigationBarBackgroundColor": "#fefefe"
+			}
+		},
+	
+		{
 			"path": "pages/commodity/commodity",
 			"style": {
 				"navigationBarTitleText": "商品管理",
