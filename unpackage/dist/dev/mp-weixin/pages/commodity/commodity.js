@@ -66,6 +66,16 @@ const _sfc_main = {
       data.goods = [...data.goods, ...res_goods.data];
       loading.value = false;
     });
+    function rootSoRt() {
+      common_vendor.wx$1.navigateTo({
+        url: "/pages/sort-admin/sort"
+      });
+    }
+    function rootGoods() {
+      common_vendor.wx$1.navigateTo({
+        url: "/pages/goods-admin/goods"
+      });
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.f(common_vendor.unref(sort), (item, index, i0) => {
@@ -91,8 +101,8 @@ const _sfc_main = {
         }),
         c: common_vendor.unref(loading)
       }, common_vendor.unref(loading) ? {} : {}, {
-        d: common_vendor.o((...args) => _ctx.rootSoRt && _ctx.rootSoRt(...args)),
-        e: common_vendor.o((...args) => _ctx.rootGoods && _ctx.rootGoods(...args))
+        d: common_vendor.o(rootSoRt),
+        e: common_vendor.o(rootGoods)
       });
     };
   }

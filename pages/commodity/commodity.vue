@@ -113,6 +113,18 @@
 		data.goods = [...data.goods,...res_goods.data]
 		loading.value = false
 	})
+	//跳转分类
+	function rootSoRt(){
+		wx.navigateTo({
+			url:'/pages/sort-admin/sort'
+		})
+	}
+	//跳转新增商品
+	function rootGoods(){
+		wx.navigateTo({
+			url:'/pages/goods-admin/goods'
+		})
+	}
 </script>
 
 <style scoped>
