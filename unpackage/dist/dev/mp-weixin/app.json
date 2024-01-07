@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/banner-admin/banner",
     "pages/goods-list/list",
+    "pages/banner-admin/banner",
     "pages/commodity/commodity",
     "pages/goods-admin/goods",
     "pages/specs/specs",

@@ -1,16 +1,51 @@
 <template>
-	<view class="select-goods">
+	<view class="select-goods" v-for="(item,index) in data.list" :ket="index">
 		<view>
-			<image src="../../static/detail/026.jpg" mode="aspectFill"></image>
+			<image :src="item.goods_cover" mode="aspectFill"></image>
 		</view>
 		<view>
-			<text class="over-text line-clamp">这是标题这是标题这是标题这是标题这是标题这是标题这是标题这是标题这是标题这是标题这是标题</text>
-			<text>1.3￥</text>
+			<text class="over-text line-clamp">{{item.goods_title}}</text>
+			<text>{{item.goods_price}}￥</text>
 		</view>
+	</view>
+	<!-- 没有数据的提示 -->
+	<view class="Tips" v-if="data.list.length === 0">目前没有任何商品数据</view>
+	<!-- 上拉加载提示 -->
+	<view class="loading-hei">
+		<Loading v-if="loading"></Loading>
 	</view>
 </template>
 
-<script>
+<script setup>
+	import {onMounted,reactive,ref} from 'vue'
+	import {inIt} from '@/Acc-config/init.js'
+	import Loading from '@/pages/public-view/loading.vue'
+	onMounted(()=>{
+		goods();
+	})
+	
+	const data = reactive({
+		list:[]
+	})
+	let obj = {goods_title:true,goods_cover:true,goods_price:true,video_ur:true,seckill:true};
+	async function goods(){
+		let DB = await inIt();
+		const res = await DB.database().collection('goods').where({shelves:true}).limit(10).field(obj).get();
+		data.list = res.data;
+	}
+	//上拉加载
+	import {onReachBottom} from '@dcloudio/uni-app'
+	let page_n = ref(0);
+	let loading = ref(false);
+	onReachBottom(async()=>{
+	loading.value = true;
+	page_n.value++;
+	let sk = page_n.value *10;
+	let DB = await inIt();
+	const res_goods = await DB.database().collection('goods').where({shelves:true}).limit(10).skip(sk).field({obj}).get()
+	data.list = [...data.list,...res_goods.data];
+	loading.value = false;
+	})
 </script>
 
 <style scoped>
