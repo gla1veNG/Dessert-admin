@@ -41,7 +41,6 @@ const _sfc_main = {
       data.sort_id = id;
       let DB = await AccConfig_init.inIt();
       const res_goods = await DB.database().collection("goods").where({ category: sort_name }).limit(10).field(field_obj).get();
-      console.log(res_goods);
       data.goods = res_goods.data;
     }
     async function shelf(id, index) {
