@@ -6,7 +6,7 @@
 	<view style="height: 90rpx;"></view>
 	<view class="sort-Header sort-table" v-for="(item,index) in banner_data" :key="index">
 		<image :src="item.banner_cover" mode="aspectFill"></image>
-		<text class="sort-but">删除</text>
+		<text class="sort-but" @click="deLete(item._id,index)">删除</text>
 	</view>
 	<!-- 没有数据的提示 -->
 	<view class="Tips" v-if="banner_data.length === 0">目前没有任何横幅数据</view>
@@ -117,6 +117,17 @@
 			getBannner();
 		}catch(e){
 			new Feedback('提交失败').toast();
+		}
+	}
+	//删除
+	async function deLete(id,index){
+		try{
+			let DB = await inIt();
+			await DB.database().collection('banner').doc(id).remove();
+			data.banner_data.splice(index,1);
+			new Feedback('删除成功','success').toast();
+		}catch(e){
+			new Feedback('删除失败').toast();
 		}
 	}
 </script>

@@ -71,6 +71,16 @@ const _sfc_main = {
         new AccConfig_media.Feedback("提交失败").toast();
       }
     }
+    async function deLete(id, index) {
+      try {
+        let DB = await AccConfig_init.inIt();
+        await DB.database().collection("banner").doc(id).remove();
+        data.banner_data.splice(index, 1);
+        new AccConfig_media.Feedback("删除成功", "success").toast();
+      } catch (e) {
+        new AccConfig_media.Feedback("删除失败").toast();
+      }
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(banner_data).length > 0
@@ -78,7 +88,8 @@ const _sfc_main = {
         b: common_vendor.f(common_vendor.unref(banner_data), (item, index, i0) => {
           return {
             a: item.banner_cover,
-            b: index
+            b: common_vendor.o(($event) => deLete(item._id, index), index),
+            c: index
           };
         }),
         c: common_vendor.unref(banner_data).length === 0
