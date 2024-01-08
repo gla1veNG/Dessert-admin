@@ -21,7 +21,7 @@
 			<view class="modify-sub modify-padding">
 				<image src="/static/detail/guanbi.svg" mode="widthFix" @click="show = false"></image>
 				<text>新增横幅</text>
-				<text>提交</text>
+				<text @click="subMit">提交</text>
 			</view>
 			<view class="upload-cover">
 				<image src="/static/detail/miaosha-img.jpg" mode="aspectFill" v-if="banner_cover === ''" @click="upImage"></image>
@@ -89,6 +89,29 @@
 		data.re_goods.goods_id = newVal.goods_id;
 		data.re_goods.video_url = newVal.video_url;
 	})
+	//提交关联商品到数据库的校验
+	function subMit(){
+		switch(true){
+			case data.banner_cover === '' : new Feedback('请上传封面图').toast()
+			break;
+			
+			case data.re_goods.title === '' : new Feedback('请关联一个商品').toast()
+			break;
+			
+			default: database();
+		}
+	}
+	//提交关联商品到数据库
+	async function database(){
+		let obj = {banner_cover:data.banner_cover,goods_id:data.re_goods.goods_id,video_url:data.re_goods.video_url};
+		try{
+			let DB = await inIt();
+			await DB.database().collection('banner').add({data:obj});
+			getBannner();
+		}catch(e){
+			console.log(e);
+		}
+	}
 </script>
 
 <style scoped>

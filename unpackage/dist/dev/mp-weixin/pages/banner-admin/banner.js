@@ -42,6 +42,28 @@ const _sfc_main = {
       data.re_goods.goods_id = newVal.goods_id;
       data.re_goods.video_url = newVal.video_url;
     });
+    function subMit() {
+      switch (true) {
+        case data.banner_cover === "":
+          new AccConfig_media.Feedback("请上传封面图").toast();
+          break;
+        case data.re_goods.title === "":
+          new AccConfig_media.Feedback("请关联一个商品").toast();
+          break;
+        default:
+          database();
+      }
+    }
+    async function database() {
+      let obj = { banner_cover: data.banner_cover, goods_id: data.re_goods.goods_id, video_url: data.re_goods.video_url };
+      try {
+        let DB = await AccConfig_init.inIt();
+        await DB.database().collection("banner").add({ data: obj });
+        getBannner();
+      } catch (e) {
+        console.log(e);
+      }
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(banner_data).length > 0
@@ -56,18 +78,19 @@ const _sfc_main = {
       }, common_vendor.unref(banner_data).length === 0 ? {} : {}, {
         d: common_vendor.o(($event) => show.value = true),
         e: common_vendor.o(($event) => show.value = false),
-        f: common_vendor.unref(banner_cover) === ""
+        f: common_vendor.o(subMit),
+        g: common_vendor.unref(banner_cover) === ""
       }, common_vendor.unref(banner_cover) === "" ? {
-        g: common_vendor.o(upImage)
+        h: common_vendor.o(upImage)
       } : {}, {
-        h: common_vendor.unref(banner_cover),
-        i: common_vendor.unref(banner_cover) != ""
+        i: common_vendor.unref(banner_cover),
+        j: common_vendor.unref(banner_cover) != ""
       }, common_vendor.unref(banner_cover) != "" ? {
-        j: common_vendor.o(($event) => banner_cover.value = "")
+        k: common_vendor.o(($event) => banner_cover.value = "")
       } : {}, {
-        k: common_vendor.t(common_vendor.unref(re_goods).title === "" ? "添加" : common_vendor.unref(re_goods).title),
-        l: common_vendor.o(addTo),
-        m: show.value
+        l: common_vendor.t(common_vendor.unref(re_goods).title === "" ? "添加" : common_vendor.unref(re_goods).title),
+        m: common_vendor.o(addTo),
+        n: show.value
       });
     };
   }
