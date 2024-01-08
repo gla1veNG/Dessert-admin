@@ -18,8 +18,26 @@ const _sfc_main = {
       data.seckill_goods = res.data;
     }
     const Time = common_vendor.reactive({
-      se_cover: ""
+      se_cover: "",
       //封面图
+      se_title: "",
+      //标题
+      se_price: "",
+      //秒杀价格
+      start: "",
+      //开始时间
+      end: "",
+      //结束时间
+      re_goods: {
+        title: "",
+        //关联的商品标题
+        goods_id: "",
+        //关联的商品id
+        video_url: "",
+        //关联的商品短视频
+        ori_price: ""
+        //关联的商品原价
+      }
     });
     async function upImage() {
       const local = await new AccConfig_media.Upload().image();
@@ -52,8 +70,12 @@ const _sfc_main = {
       }, Time.se_cover != "" ? {
         j: common_vendor.o(($event) => Time.se_cover = "")
       } : {}, {
-        k: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        l: show.value
+        k: _ctx.se_title,
+        l: common_vendor.o(($event) => _ctx.se_title = $event.detail.value),
+        m: _ctx.se_price,
+        n: common_vendor.o(($event) => _ctx.se_price = $event.detail.value),
+        o: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
+        p: show.value
       });
     };
   }

@@ -31,8 +31,8 @@
 				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" v-if="Time.se_cover != ''" @click="Time.se_cover = ''"></image>
 			</view>
 			<view class="seckill-input">
-				<input type="text" placeholder="请输入标题" placeholder-class="input-color" cursor-spacing="50" />
-				<input type="number" placeholder="请输入秒杀价格" placeholder-class="input-color" cursor-spacing="50" />
+				<input type="text" v-model="se_title" placeholder="请输入标题" placeholder-class="input-color" cursor-spacing="50" />
+				<input type="number" v-model="se_price" placeholder="请输入秒杀价格" placeholder-class="input-color" cursor-spacing="50" />
 			</view>
 			<!-- 设置时间 -->
 			<view class="pick-Outer">
@@ -99,7 +99,17 @@
 	}
 	
 	const Time = reactive({
-		se_cover:''//封面图
+		se_cover:'',//封面图
+		se_title:'',//标题
+		se_price:'',//秒杀价格
+		start:'',//开始时间
+		end:'',//结束时间
+		re_goods:{
+			title:'',//关联的商品标题
+			goods_id:'',//关联的商品id
+			video_url:'',//关联的商品短视频
+			ori_price:'',//关联的商品原价
+		}
 	})
 	//上传封面图
 	import {Feedback,Upload} from '@/Acc-config/media.js'
