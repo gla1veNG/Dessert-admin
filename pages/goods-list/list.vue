@@ -1,5 +1,5 @@
 <template>
-	<view class="select-goods" v-for="(item,index) in data.list" :ket="index">
+	<view class="select-goods" v-for="(item,index) in data.list" :ket="index" @click="seLect(item.goods_title,item._id,item.goods_price,item.video_url)">
 		<view>
 			<image :src="item.goods_cover" mode="aspectFill"></image>
 		</view>
@@ -46,6 +46,12 @@
 	data.list = [...data.list,...res_goods.data];
 	loading.value = false;
 	})
+	//选中关联商品
+	import {select_goods} from '@/Acc-config/answer.js'
+	function seLect(goods_title,goods_id,goods_price,video_url){
+		select_goods.value = {goods_title,goods_id,goods_price,video_url};
+		wx.navigateBack({delta:1});
+	}
 </script>
 
 <style scoped>

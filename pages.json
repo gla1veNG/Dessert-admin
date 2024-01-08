@@ -1,16 +1,16 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/goods-list/list",
+			"path": "pages/banner-admin/banner",
 			"style": {
-				"navigationBarTitleText": "选择商品",
+				"navigationBarTitleText": "横幅管理",
 				"navigationBarBackgroundColor": "#fefefe"
 			}
 		},
 		{
-			"path": "pages/banner-admin/banner",
+			"path": "pages/goods-list/list",
 			"style": {
-				"navigationBarTitleText": "横幅管理",
+				"navigationBarTitleText": "选择商品",
 				"navigationBarBackgroundColor": "#fefefe"
 			}
 		},

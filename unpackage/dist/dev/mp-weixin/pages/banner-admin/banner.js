@@ -2,6 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+const AccConfig_answer = require("../../Acc-config/answer.js");
 const _sfc_main = {
   __name: "banner",
   setup(__props) {
@@ -11,9 +12,14 @@ const _sfc_main = {
     });
     const data = common_vendor.reactive({
       banner_data: [],
-      banner_cover: ""
+      banner_cover: "",
+      re_goods: {
+        title: "",
+        goods_id: "",
+        video_url: ""
+      }
     });
-    const { banner_data, banner_cover } = common_vendor.toRefs(data);
+    const { banner_data, banner_cover, re_goods } = common_vendor.toRefs(data);
     async function getBannner() {
       let DB = await AccConfig_init.inIt();
       let res = await DB.database().collection("banner").get();
@@ -26,6 +32,16 @@ const _sfc_main = {
       data.banner_cover = res;
       common_vendor.wx$1.hideLoading();
     }
+    function addTo() {
+      common_vendor.wx$1.navigateTo({
+        url: "/pages/goods-list/list"
+      });
+    }
+    common_vendor.watch(AccConfig_answer.select_goods, (newVal, oldVal) => {
+      data.re_goods.title = newVal.goods_title;
+      data.re_goods.goods_id = newVal.goods_id;
+      data.re_goods.video_url = newVal.video_url;
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(banner_data).length > 0
@@ -49,7 +65,9 @@ const _sfc_main = {
       }, common_vendor.unref(banner_cover) != "" ? {
         j: common_vendor.o(($event) => banner_cover.value = "")
       } : {}, {
-        k: show.value
+        k: common_vendor.t(common_vendor.unref(re_goods).title === "" ? "添加" : common_vendor.unref(re_goods).title),
+        l: common_vendor.o(addTo),
+        m: show.value
       });
     };
   }

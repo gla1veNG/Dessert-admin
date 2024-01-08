@@ -28,16 +28,16 @@
 				<image :src="banner_cover" mode="aspectFill"></image>
 				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" v-if="banner_cover != ''" @click="banner_cover = ''"></image>
 			</view>
-			<view class="relation relation-back">
+			<view class="relation relation-back" @click="addTo">
 				<text>关联商品</text>
-				<text class="over-text">添加</text>
+				<text class="over-text">{{re_goods.title === '' ? '添加' : re_goods.title}}</text>
 			</view>
 		</view>
 	</page-container>
 </template>
 
 <script setup>
-	import {ref,onMounted,reactive,toRefs} from 'vue'
+	import {ref,onMounted,reactive,toRefs,watch} from 'vue'
 	import {inIt} from '@/Acc-config/init.js'
 	function onEnter(){}
 	
@@ -49,11 +49,16 @@
 	
 	const data = reactive({
 		banner_data:[],
-		banner_cover:''
+		banner_cover:'',
+		re_goods:{
+			title:'',
+			goods_id:'',
+			video_url:''
+		}
 		
 	})
 	
-	const {banner_data,banner_cover} = toRefs(data);
+	const {banner_data,banner_cover,re_goods} = toRefs(data);
 	
 	//获取数据
 	async function getBannner(){
@@ -71,6 +76,19 @@
 		wx.hideLoading();
 		
 	} 
+	//去选择关联商品
+	function addTo(){
+		wx.navigateTo({
+			url:'/pages/goods-list/list'
+		})
+	}
+	//监听关联商品
+	import {select_goods} from '@/Acc-config/answer.js'
+	watch(select_goods,(newVal,oldVal)=>{
+		data.re_goods.title = newVal.goods_title;
+		data.re_goods.goods_id = newVal.goods_id;
+		data.re_goods.video_url = newVal.video_url;
+	})
 </script>
 
 <style scoped>
