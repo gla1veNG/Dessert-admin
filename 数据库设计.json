@@ -64,3 +64,20 @@
 		video_url:'视频链接'
 	}
 ]
+
+/*秒杀数据库 seckill*/
+规则:所有用户可读, 仅创建者可读写
+[
+	{
+		cover:'封面图',
+		title:'标题',
+		ori_price:'原价',
+		price_seike:'秒杀价',
+		seckill_time:{
+			start_Time:'开始时间',
+			end_Time:'结束时间'
+		},
+		goods_id:'关联商品id',
+		video_url:'视频链接'
+	}
+]

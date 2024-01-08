@@ -1,36 +1,34 @@
 <template>
-	<view>
-		<view class="sort-Header sort-position">
-			<text>秒杀封面图</text>
-			<text>标题</text>
-			<text>操作</text>
-		</view>
+	<view class="sort-Header sort-position" v-if="data.seckill_goods.length > 0">
+		<text>秒杀封面图</text>
+		<text>标题</text>
+		<text>操作</text>
 	</view>
 	<view style="height: 90rpx;"></view>
-	<view class="sort-Header sort-table">
-		<image src="../../static/detail/026.jpg" mode="aspectFill"></image>
-		<text>这是标题</text>
+	<view class="sort-Header sort-table" v-for="(item,index) in data.seckill_goods" :key="index">
+		<image :src="item.cover" mode="aspectFill"></image>
+		<text>{{item.title}}</text>
 		<text class="sort-but">删除</text>
 	</view>
 	<!-- 没有数据的提示 -->
-	<view class="Tips">目前没有任何横幅数据</view>
+	<view class="Tips" v-if="data.seckill_goods.length === 0">目前没有任何横幅数据</view>
 	<!-- 底部 -->
 	<view style="height:300rpx;"></view>
 	<view class="newly-added-view">
-		<view class="newly-added">创建秒杀</view>
+		<view class="newly-added" @click="show = true">创建秒杀</view>
 	</view>
 	<!-- 弹窗 -->
-	<page-container show="true" position="bottom" bindenter="onEnter">
+	<page-container :show="show" position="bottom" bindenter="onEnter">
 		<view class="space-view">
 			<view class="modify-sub modify-padding">
-				<image src="/static/detail/guanbi.svg" mode="widthFix"></image>
+				<image src="/static/detail/guanbi.svg" mode="widthFix" @click="show = false"></image>
 				<text>创建秒杀</text>
 				<text>提交</text>
 			</view>
 			<view class="upload-cover">
-				<image src="/static/detail/miaosha-img.jpg" mode="aspectFill"></image>
-				<!-- <image src="banner_cover" mode="aspectFill"></image> -->
-				<image src="/static/detail/shanchu-goods.svg" mode="widthFix"></image>
+				<image src="/static/detail/miaosha-img.jpg" mode="aspectFill" v-if="Time.se_cover === ''" @click="upImage"></image>
+				<image :src="Time.se_cover" mode="aspectFill"></image>
+				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" v-if="Time.se_cover != ''" @click="Time.se_cover = ''"></image>
 			</view>
 			<view class="seckill-input">
 				<input type="text" placeholder="请输入标题" placeholder-class="input-color" cursor-spacing="50" />
@@ -73,7 +71,46 @@
 </template>
 
 <script setup>
+	import {
+		inIt
+	} from '@/Acc-config/init.js'
+	import {
+		ref,
+		onMounted,
+		reactive,
+		toRefs
+	} from 'vue'
+
 	function onEnter() {}
+
+	onMounted(() => {
+		getSeckill();
+	})
+	
+	const show = ref(false);
+	const data = reactive({
+		seckill_goods: []
+	})
+	//获取数据
+	async function getSeckill() {
+		let DB = await inIt();
+		let res = await DB.database().collection('seckill').get();
+		data.seckill_goods = res.data;
+	}
+	
+	const Time = reactive({
+		se_cover:''//封面图
+	})
+	//上传封面图
+	import {Feedback,Upload} from '@/Acc-config/media.js'
+	async function upImage(){
+		const local = await new Upload().image();
+		wx.showLoading({title:'正在上传',mask:true});
+		const res = await new Upload().cloud(local[0].tempFilePath);
+		Time.se_cover = res;
+		wx.hideLoading();
+		
+	} 
 </script>
 
 <style scoped>
