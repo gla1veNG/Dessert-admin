@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/seckill-admin/seckill",
     "pages/banner-admin/banner",
     "pages/goods-list/list",
     "pages/commodity/commodity",
