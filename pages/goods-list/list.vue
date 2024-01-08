@@ -1,11 +1,11 @@
 <template>
-	<view class="select-goods" v-for="(item,index) in data.list" :ket="index" @click="seLect(item.goods_title,item._id,item.goods_price,item.video_url)">
+	<view class="select-goods" v-for="(item,index) in data.list" :ket="index" @click="seLect(item.goods_title,item._id,item.goods_price,item.video_url,item.relation)">
 		<view>
 			<image :src="item.goods_cover" mode="aspectFill"></image>
 		</view>
 		<view>
-			<text class="over-text line-clamp">{{item.goods_title}}</text>
-			<text>{{item.goods_price}}￥</text>
+			<text class="over-text line-clamp" :style="{color:(item.relation ? '#dfdfdf' : '')}">{{item.goods_title}}</text>
+			<text :style="{color:(item.relation ? '#dfdfdf' : '')}">{{item.goods_price}}￥</text>
 		</view>
 	</view>
 	<!-- 没有数据的提示 -->
@@ -17,9 +17,10 @@
 </template>
 
 <script setup>
-	import {onMounted,reactive,ref} from 'vue'
+	import {onMounted,reactive,ref, watch} from 'vue'
 	import {inIt} from '@/Acc-config/init.js'
 	import Loading from '@/pages/public-view/loading.vue'
+	import { Feedback } from '../../Acc-config/media';
 	onMounted(()=>{
 		goods();
 	})
@@ -34,7 +35,7 @@
 		data.list = res.data;
 	}
 	//上拉加载
-	import {onReachBottom} from '@dcloudio/uni-app'
+	import {onReachBottom,onLoad} from '@dcloudio/uni-app'
 	let page_n = ref(0);
 	let loading = ref(false);
 	onReachBottom(async()=>{
@@ -48,10 +49,29 @@
 	})
 	//选中关联商品
 	import {select_goods} from '@/Acc-config/answer.js'
-	function seLect(goods_title,goods_id,goods_price,video_url){
-		select_goods.value = {goods_title,goods_id,goods_price,video_url};
-		wx.navigateBack({delta:1});
+	function seLect(goods_title,goods_id,goods_price,video_url,relation){
+		if(relation){
+			new Feedback('该商品已被关联').toast();
+		}else{
+			select_goods.value = {goods_title,goods_id,goods_price,video_url};
+			wx.navigateBack({delta:1});
+		}
 	}
+	//接受上个页面传来的值
+	const rel_data = reactive({
+		data:[]
+	})
+	onLoad((event)=>{
+		rel_data.data = JSON.parse(event.ref_id);
+	})
+	watch(()=>data.list,(newVal,oldVal)=>{
+		for(let i = 0;i<rel_data.data.length;i++){
+			let index = newVal.findIndex(item=>item._id === rel_data.data[i]);
+			if(index >= 0){
+				data.list[index]['relation'] = true;
+			}
+		}
+	})
 </script>
 
 <style scoped>

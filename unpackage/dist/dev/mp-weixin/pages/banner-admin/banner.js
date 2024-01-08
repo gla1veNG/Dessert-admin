@@ -33,8 +33,10 @@ const _sfc_main = {
       common_vendor.wx$1.hideLoading();
     }
     function addTo() {
+      const rel_id = data.banner_data.map((item) => item.goods_id);
+      const str_id = JSON.stringify(rel_id);
       common_vendor.wx$1.navigateTo({
-        url: "/pages/goods-list/list"
+        url: "/pages/goods-list/list?ref_id=" + str_id
       });
     }
     common_vendor.watch(AccConfig_answer.select_goods, (newVal, oldVal) => {
@@ -55,13 +57,18 @@ const _sfc_main = {
       }
     }
     async function database() {
+      common_vendor.wx$1.showLoading({ title: "正在提交", mask: true });
       let obj = { banner_cover: data.banner_cover, goods_id: data.re_goods.goods_id, video_url: data.re_goods.video_url };
       try {
         let DB = await AccConfig_init.inIt();
         await DB.database().collection("banner").add({ data: obj });
+        show.value = false;
+        data.banner_cover = "";
+        data.re_goods.title = "";
+        common_vendor.wx$1.hideLoading();
         getBannner();
       } catch (e) {
-        console.log(e);
+        new AccConfig_media.Feedback("提交失败").toast();
       }
     }
     return (_ctx, _cache) => {

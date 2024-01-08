@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
+const AccConfig_media = require("../../Acc-config/media.js");
 const AccConfig_answer = require("../../Acc-config/answer.js");
 if (!Math) {
   Loading();
@@ -32,19 +33,39 @@ const _sfc_main = {
       data.list = [...data.list, ...res_goods.data];
       loading.value = false;
     });
-    function seLect(goods_title, goods_id, goods_price, video_url) {
-      AccConfig_answer.select_goods.value = { goods_title, goods_id, goods_price, video_url };
-      common_vendor.wx$1.navigateBack({ delta: 1 });
+    function seLect(goods_title, goods_id, goods_price, video_url, relation) {
+      if (relation) {
+        new AccConfig_media.Feedback("该商品已被关联").toast();
+      } else {
+        AccConfig_answer.select_goods.value = { goods_title, goods_id, goods_price, video_url };
+        common_vendor.wx$1.navigateBack({ delta: 1 });
+      }
     }
+    const rel_data = common_vendor.reactive({
+      data: []
+    });
+    common_vendor.onLoad((event) => {
+      rel_data.data = JSON.parse(event.ref_id);
+    });
+    common_vendor.watch(() => data.list, (newVal, oldVal) => {
+      for (let i = 0; i < rel_data.data.length; i++) {
+        let index = newVal.findIndex((item) => item._id === rel_data.data[i]);
+        if (index >= 0) {
+          data.list[index]["relation"] = true;
+        }
+      }
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.f(data.list, (item, index, i0) => {
           return {
             a: item.goods_cover,
             b: common_vendor.t(item.goods_title),
-            c: common_vendor.t(item.goods_price),
-            d: index,
-            e: common_vendor.o(($event) => seLect(item.goods_title, item._id, item.goods_price, item.video_url))
+            c: item.relation ? "#dfdfdf" : "",
+            d: common_vendor.t(item.goods_price),
+            e: item.relation ? "#dfdfdf" : "",
+            f: index,
+            g: common_vendor.o(($event) => seLect(item.goods_title, item._id, item.goods_price, item.video_url, item.relation))
           };
         }),
         b: data.list.length === 0

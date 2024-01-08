@@ -78,8 +78,10 @@
 	} 
 	//去选择关联商品
 	function addTo(){
+		const rel_id = data.banner_data.map(item=>item.goods_id);
+		const str_id = JSON.stringify(rel_id);
 		wx.navigateTo({
-			url:'/pages/goods-list/list'
+			url:'/pages/goods-list/list?ref_id=' + str_id
 		})
 	}
 	//监听关联商品
@@ -103,13 +105,18 @@
 	}
 	//提交关联商品到数据库
 	async function database(){
+		wx.showLoading({title:'正在提交',mask:true});
 		let obj = {banner_cover:data.banner_cover,goods_id:data.re_goods.goods_id,video_url:data.re_goods.video_url};
 		try{
 			let DB = await inIt();
 			await DB.database().collection('banner').add({data:obj});
+			show.value = false;
+			data.banner_cover = '';
+			data.re_goods.title = '';
+			wx.hideLoading();
 			getBannner();
 		}catch(e){
-			console.log(e);
+			new Feedback('提交失败').toast();
 		}
 	}
 </script>
