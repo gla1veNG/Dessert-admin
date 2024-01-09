@@ -1,10 +1,13 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
+const AccConfig_date = require("../../Acc-config/date.js");
+const AccConfig_caTime = require("../../Acc-config/ca-time.js");
 const AccConfig_media = require("../../Acc-config/media.js");
 const _sfc_main = {
   __name: "seckill",
   setup(__props) {
+    AccConfig_caTime.current();
     common_vendor.onMounted(() => {
       getSeckill();
     });
@@ -18,6 +21,10 @@ const _sfc_main = {
       data.seckill_goods = res.data;
     }
     const Time = common_vendor.reactive({
+      multiArray: AccConfig_date.date,
+      //多列选择器数据
+      muleiIndex: [0, 0, 0, 0, 0],
+      //value 每一项的值
       se_cover: "",
       //封面图
       se_title: "",
@@ -70,12 +77,14 @@ const _sfc_main = {
       }, Time.se_cover != "" ? {
         j: common_vendor.o(($event) => Time.se_cover = "")
       } : {}, {
-        k: _ctx.se_title,
-        l: common_vendor.o(($event) => _ctx.se_title = $event.detail.value),
-        m: _ctx.se_price,
-        n: common_vendor.o(($event) => _ctx.se_price = $event.detail.value),
-        o: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        p: show.value
+        k: Time.se_title,
+        l: common_vendor.o(($event) => Time.se_title = $event.detail.value),
+        m: Time.se_price,
+        n: common_vendor.o(($event) => Time.se_price = $event.detail.value),
+        o: Time.multiArray,
+        p: Time.muleiIndex,
+        q: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
+        r: show.value
       });
     };
   }

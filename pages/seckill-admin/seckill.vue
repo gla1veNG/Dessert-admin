@@ -31,15 +31,15 @@
 				<image src="/static/detail/shanchu-goods.svg" mode="widthFix" v-if="Time.se_cover != ''" @click="Time.se_cover = ''"></image>
 			</view>
 			<view class="seckill-input">
-				<input type="text" v-model="se_title" placeholder="请输入标题" placeholder-class="input-color" cursor-spacing="50" />
-				<input type="number" v-model="se_price" placeholder="请输入秒杀价格" placeholder-class="input-color" cursor-spacing="50" />
+				<input type="text" v-model="Time.se_title" placeholder="请输入标题" placeholder-class="input-color" cursor-spacing="50" />
+				<input type="number" v-model="Time.se_price" placeholder="请输入秒杀价格" placeholder-class="input-color" cursor-spacing="50" />
 			</view>
 			<!-- 设置时间 -->
 			<view class="pick-Outer">
 				<view class="pick-view Underline">
 					<view>
 						<text>设置开始时间</text>
-						<picker class="flex-left" mode="multiSelector">
+						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name">
 							<view>
 								<text class="pick-time">2024-01-08 00:00:00</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -71,17 +71,12 @@
 </template>
 
 <script setup>
-	import {
-		inIt
-	} from '@/Acc-config/init.js'
-	import {
-		ref,
-		onMounted,
-		reactive,
-		toRefs
-	} from 'vue'
-
+	import {inIt} from '@/Acc-config/init.js'
+	import {ref,onMounted,reactive,toRefs} from 'vue'
+	import {date} from '@/Acc-config/date.js'
+	import {current} from '@/Acc-config/ca-time.js'
 	function onEnter() {}
+	current();
 
 	onMounted(() => {
 		getSeckill();
@@ -99,6 +94,8 @@
 	}
 	
 	const Time = reactive({
+		multiArray:date,//多列选择器数据
+		muleiIndex:[0,0,0,0,0],//value 每一项的值
 		se_cover:'',//封面图
 		se_title:'',//标题
 		se_price:'',//秒杀价格
