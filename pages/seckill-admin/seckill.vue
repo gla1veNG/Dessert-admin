@@ -39,7 +39,7 @@
 				<view class="pick-view Underline">
 					<view>
 						<text>设置开始时间</text>
-						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name">
+						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colStart">
 							<view>
 								<text class="pick-time">2024-01-08 00:00:00</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -51,7 +51,7 @@
 				<view class="pick-view">
 					<view class="pick-view">
 						<view>设置结束时间</view>
-						<picker class="flex-left" mode="multiSelector">
+						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd">
 							<view>
 								<text class="pick-time">2024-01-10 00:00:00</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -74,7 +74,7 @@
 	import {inIt} from '@/Acc-config/init.js'
 	import {ref,onMounted,reactive,toRefs} from 'vue'
 	import {date} from '@/Acc-config/date.js'
-	import {current} from '@/Acc-config/ca-time.js'
+	import {current,days} from '@/Acc-config/ca-time.js'
 	function onEnter() {}
 	current();
 
@@ -106,7 +106,8 @@
 			goods_id:'',//关联的商品id
 			video_url:'',//关联的商品短视频
 			ori_price:'',//关联的商品原价
-		}
+		},
+		years:[{'year':date[0][0].time,'month':date[1][0].time}]
 	})
 	//上传封面图
 	import {Feedback,Upload} from '@/Acc-config/media.js'
@@ -118,6 +119,37 @@
 		wx.hideLoading();
 		
 	} 
+	//开始时间：滚动时触发
+	function colStart(event){
+		const RES = event.detail;
+		shAre(RES);
+	}
+	//结束时间：滚动时触发
+	function colEnd(event){
+		const RES = event.detail;
+		shAre(RES);
+	} 
+	//开始时间和结束时间滚动时触发公用的方法：重新计算某年某月的天数
+	function shAre(RES){
+		if(RES.column === 0){
+			//滚动了年
+			if(RES.value === 0){
+				//今年
+				Time.years[0].year = date[0][0].time
+			}else if(RES.value === 1){
+				//明年
+				Time.years[0].year = date[0][1].time
+			}
+		}else if(RES.column === 1){
+			//滚动了月
+			Time.years[0].month = date[RES.column][RES.value].time
+		}
+		if(RES.column === 0 || RES.column === 1 ){
+			days(Time.years);
+			Time.multiArray[2] = days(Time.years)[0];
+		}
+		
+	}
 </script>
 
 <style scoped>

@@ -16,4 +16,17 @@ let current = () => {
     AccConfig_date.date[2].push({ time: Number(i), name: i + "日" });
   }
 };
+let days = (years) => {
+  const C_year = common_vendor.hooks().format("YYYY");
+  const C_month = common_vendor.hooks().format("MM");
+  const C_day = common_vendor.hooks().format("DD");
+  let INIT = years[0].year == C_year && years[0].month == C_month ? C_day : 1;
+  const new_data = [];
+  const Days = common_vendor.hooks(years[0].year + "/" + years[0].month, "YYYY/MM").daysInMonth();
+  for (let i = Number(INIT); i <= Days; i++) {
+    new_data.push({ time: Number(i), name: i + "日" });
+  }
+  return AccConfig_date.date.splice(2, 1, new_data);
+};
 exports.current = current;
+exports.days = days;

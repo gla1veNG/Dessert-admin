@@ -44,7 +44,8 @@ const _sfc_main = {
         //关联的商品短视频
         ori_price: ""
         //关联的商品原价
-      }
+      },
+      years: [{ "year": AccConfig_date.date[0][0].time, "month": AccConfig_date.date[1][0].time }]
     });
     async function upImage() {
       const local = await new AccConfig_media.Upload().image();
@@ -52,6 +53,29 @@ const _sfc_main = {
       const res = await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
       Time.se_cover = res;
       common_vendor.wx$1.hideLoading();
+    }
+    function colStart(event) {
+      const RES = event.detail;
+      shAre(RES);
+    }
+    function colEnd(event) {
+      const RES = event.detail;
+      shAre(RES);
+    }
+    function shAre(RES) {
+      if (RES.column === 0) {
+        if (RES.value === 0) {
+          Time.years[0].year = AccConfig_date.date[0][0].time;
+        } else if (RES.value === 1) {
+          Time.years[0].year = AccConfig_date.date[0][1].time;
+        }
+      } else if (RES.column === 1) {
+        Time.years[0].month = AccConfig_date.date[RES.column][RES.value].time;
+      }
+      if (RES.column === 0 || RES.column === 1) {
+        AccConfig_caTime.days(Time.years);
+        Time.multiArray[2] = AccConfig_caTime.days(Time.years)[0];
+      }
     }
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -83,8 +107,12 @@ const _sfc_main = {
         n: common_vendor.o(($event) => Time.se_price = $event.detail.value),
         o: Time.multiArray,
         p: Time.muleiIndex,
-        q: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        r: show.value
+        q: common_vendor.o(colStart),
+        r: Time.multiArray,
+        s: Time.muleiIndex,
+        t: common_vendor.o(colEnd),
+        v: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
+        w: show.value
       });
     };
   }

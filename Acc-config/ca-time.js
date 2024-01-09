@@ -22,7 +22,22 @@ let current = ()=>{
 	/*获取今年每个月天数：当前月开始计算*/
 	const Days = moment(C_year + '/' + C_month,'YYYY/MM').daysInMonth()//算出当前月的天数
 	for(let i = C_day;i<= Days;i++){
-		date[2].push({time:Number(i),name:i + '日'})
+		date[2].push({time:Number(i),name:i + '日'});
 	}
 }
-export {current}
+//计算滚动时得到某年某月的天数
+let days = (years)=>{
+	const C_year = moment().format('YYYY');//当前年
+	const C_month = moment().format('MM');//当前月
+	const C_day = moment().format('DD');//当前日
+	//如果在当前年月，那么 日 就从今天算起
+	let INIT = years[0].year == C_year && years[0].month == C_month ? C_day : 1;
+	
+	const new_data = [];
+	const Days = moment(years[0].year + '/' + years[0].month,'YYYY/MM').daysInMonth()//算出所选月的天数
+	for(let i = Number(INIT);i<= Days;i++){
+		new_data.push({time:Number(i),name:i + '日'});
+	}
+	return 	date.splice(2,1,new_data);
+}
+export {current,days}
