@@ -39,7 +39,7 @@
 				<view class="pick-view Underline">
 					<view>
 						<text>设置开始时间</text>
-						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colStart">
+						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colStart" @change="changeStart">
 							<view>
 								<text class="pick-time">2024-01-08 00:00:00</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -51,7 +51,7 @@
 				<view class="pick-view">
 					<view class="pick-view">
 						<view>设置结束时间</view>
-						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd">
+						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd" @change="changeEnd">
 							<view>
 								<text class="pick-time">2024-01-10 00:00:00</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -147,7 +147,20 @@
 		if(RES.column === 0 || RES.column === 1 ){
 			days(Time.years);
 			Time.multiArray[2] = days(Time.years)[0];
-		}
+		}	
+	}
+	//开始时间：确定
+	function changeStart(e){
+		const RES = e.detail.value;
+		conFirm(RES,'start');
+	}
+	//结束时间：确定
+	function changeEnd(e){
+		const RES = e.detail.value;
+		conFirm(RES,'end');
+	}
+	//开始时间和结束时间确定公用的方法
+	function conFirm(RES,val){
 		
 	}
 </script>

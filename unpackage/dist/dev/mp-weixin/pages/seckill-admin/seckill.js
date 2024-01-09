@@ -77,6 +77,12 @@ const _sfc_main = {
         Time.multiArray[2] = AccConfig_caTime.days(Time.years)[0];
       }
     }
+    function changeStart(e) {
+      e.detail.value;
+    }
+    function changeEnd(e) {
+      e.detail.value;
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: data.seckill_goods.length > 0
@@ -108,11 +114,13 @@ const _sfc_main = {
         o: Time.multiArray,
         p: Time.muleiIndex,
         q: common_vendor.o(colStart),
-        r: Time.multiArray,
-        s: Time.muleiIndex,
-        t: common_vendor.o(colEnd),
-        v: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        w: show.value
+        r: common_vendor.o(changeStart),
+        s: Time.multiArray,
+        t: Time.muleiIndex,
+        v: common_vendor.o(colEnd),
+        w: common_vendor.o(changeEnd),
+        x: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
+        y: show.value
       });
     };
   }
