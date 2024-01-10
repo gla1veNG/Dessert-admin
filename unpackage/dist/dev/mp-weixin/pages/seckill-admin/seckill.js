@@ -4,6 +4,7 @@ const AccConfig_init = require("../../Acc-config/init.js");
 const AccConfig_date = require("../../Acc-config/date.js");
 const AccConfig_caTime = require("../../Acc-config/ca-time.js");
 const AccConfig_media = require("../../Acc-config/media.js");
+const AccConfig_answer = require("../../Acc-config/answer.js");
 const _sfc_main = {
   __name: "seckill",
   setup(__props) {
@@ -114,6 +115,19 @@ const _sfc_main = {
         }
       }
     });
+    function addTo() {
+      const rel_id = data.seckill_goods.map((item) => item.goods_id);
+      const str_id = JSON.stringify(rel_id);
+      common_vendor.wx$1.navigateTo({
+        url: "/pages/goods-list/list?ref_id=" + str_id
+      });
+    }
+    common_vendor.watch(AccConfig_answer.select_goods, (newVal, oldVal) => {
+      Time.re_goods.title = newVal.goods_title;
+      Time.re_goods.goods_id = newVal.goods_id;
+      Time.re_goods.video_url = newVal.video_url;
+      Time.re_goods.ori_price = newVal.goods_price;
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: data.seckill_goods.length > 0
@@ -152,8 +166,9 @@ const _sfc_main = {
         w: Time.muleiIndex,
         x: common_vendor.o(colEnd),
         y: common_vendor.o(changeEnd),
-        z: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        A: show.value
+        z: common_vendor.t(Time.re_goods.title === "" ? "添加" : Time.re_goods.title),
+        A: common_vendor.o(addTo),
+        B: show.value
       });
     };
   }

@@ -63,7 +63,7 @@
 			<!-- 关联商品 -->
 			<view class="relation relation-back" @click="addTo">
 				<text>关联商品</text>
-				<text class="over-text">添加</text>
+				<text class="over-text">{{Time.re_goods.title === '' ? '添加' : Time.re_goods.title}}</text>
 			</view>
 			<view style="height: 50rpx;"></view>
 		</view>
@@ -192,6 +192,22 @@
 				Time.ban = true;
 			}
 		}
+	})
+	//去选择关联商品
+	function addTo(){
+		const rel_id = data.seckill_goods.map(item=>item.goods_id);
+		const str_id = JSON.stringify(rel_id);
+		wx.navigateTo({
+			url:'/pages/goods-list/list?ref_id=' + str_id
+		})
+	}
+	//监听关联商品
+	import {select_goods} from '@/Acc-config/answer.js'
+	watch(select_goods,(newVal,oldVal)=>{
+		Time.re_goods.title = newVal.goods_title;
+		Time.re_goods.goods_id = newVal.goods_id;
+		Time.re_goods.video_url = newVal.video_url;
+		Time.re_goods.ori_price = newVal.goods_price;
 	})
 </script>
 
