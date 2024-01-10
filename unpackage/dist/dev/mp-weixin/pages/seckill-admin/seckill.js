@@ -103,7 +103,6 @@ const _sfc_main = {
     }
     common_vendor.hooks.locale("zh-cn");
     common_vendor.watch([() => Time.start, () => Time.end], (newVal, oldVal) => {
-      console.log(newVal);
       if (newVal[0] != "" && newVal[1] != "") {
         const start = common_vendor.hooks(newVal[0], "YYYY/MM/DD hh:mm:ss").unix();
         const end = common_vendor.hooks(newVal[1], "YYYY/MM/DD hh:mm:ss").unix();
@@ -148,6 +147,48 @@ const _sfc_main = {
         case Time.re_goods.goods_id === "":
           new AccConfig_media.Feedback("请先关联一个商品").toast();
           break;
+        default:
+          database();
+      }
+    }
+    async function database() {
+      common_vendor.wx$1.showLoading({ title: "正在提交", mask: true });
+      const start_Time = common_vendor.hooks(Time.start, "YYYY/MM/DD hh:mm:ss").unix();
+      const end_Time = common_vendor.hooks(Time.end, "YYYY/MM/DD hh:mm:ss").unix();
+      let obj = {
+        cover: Time.se_cover,
+        title: Time.se_title,
+        ori_price: Time.re_goods.ori_price,
+        price_spike: Number(Time.se_price),
+        seckill_time: { start_Time, end_Time },
+        goods_id: Time.re_goods.goods_id,
+        video_url: Time.re_goods.video_url
+      };
+      try {
+        let DB = await AccConfig_init.inIt();
+        await DB.database().collection("seckill").add({ data: obj });
+        await DB.database().collection("goods").doc(Time.re_goods.goods_id).update({ data: { seckill: true } });
+        show.value = false;
+        getSeckill();
+        new AccConfig_media.Feedback("提交成功", "success").toast();
+        Time.se_cover = "";
+        Time.se_title;
+        Time.se_price = "";
+        Time.start = "";
+        Time.end = "";
+        Time.re_goods.title = "";
+      } catch (e) {
+        new AccConfig_media.Feedback("提交失败").toast();
+      }
+    }
+    async function deLete(id, index) {
+      try {
+        let DB = await AccConfig_init.inIt();
+        await DB.database().collection("seckill").doc(id).remove();
+        data.seckill_goods.splice(index, 1);
+        new AccConfig_media.Feedback("删除成功", "success").toast();
+      } catch (e) {
+        new AccConfig_media.Feedback("删除失败").toast();
       }
     }
     return (_ctx, _cache) => {
@@ -158,7 +199,8 @@ const _sfc_main = {
           return {
             a: item.cover,
             b: common_vendor.t(item.title),
-            c: index
+            c: common_vendor.o(($event) => deLete(item._id, index), index),
+            d: index
           };
         }),
         c: data.seckill_goods.length === 0

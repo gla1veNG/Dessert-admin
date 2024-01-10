@@ -74,8 +74,8 @@
 		ori_price:'原价',
 		price_seike:'秒杀价',
 		seckill_time:{
-			start_Time:'开始时间',
-			end_Time:'结束时间'
+			start_Time:'开始时间:时间戳',
+			end_Time:'结束时间:时间戳'
 		},
 		goods_id:'关联商品id',
 		video_url:'视频链接'

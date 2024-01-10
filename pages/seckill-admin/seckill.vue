@@ -8,7 +8,7 @@
 	<view class="sort-Header sort-table" v-for="(item,index) in data.seckill_goods" :key="index">
 		<image :src="item.cover" mode="aspectFill"></image>
 		<text>{{item.title}}</text>
-		<text class="sort-but">删除</text>
+		<text class="sort-but" @click="deLete(item._id,index)">删除</text>
 	</view>
 	<!-- 没有数据的提示 -->
 	<view class="Tips" v-if="data.seckill_goods.length === 0">目前没有任何横幅数据</view>
@@ -180,7 +180,6 @@
 	moment.locale('zh-cn');
 	moment.supp
 	watch([()=>Time.start,()=>Time.end],(newVal,oldVal)=>{
-		console.log(newVal);
 		if(newVal[0] != '' && newVal[1] != ''){
 			//转换时间戳
 			const start = moment(newVal[0],'YYYY/MM/DD hh:mm:ss').unix();//开始时间
@@ -229,7 +228,46 @@
 			
 			case Time.re_goods.goods_id === '' : new Feedback('请先关联一个商品').toast();
 			break;
-			dafault:database();
+			default:database();
+		}
+	}
+	async function database(){
+			wx.showLoading({title: '正在提交',mask:true})
+			const start_Time = moment(Time.start,'YYYY/MM/DD hh:mm:ss').unix()
+			const end_Time = moment(Time.end,'YYYY/MM/DD hh:mm:ss').unix()
+			let obj = {
+				cover:Time.se_cover,
+				title:Time.se_title,
+				ori_price:Time.re_goods.ori_price,
+				price_spike:Number(Time.se_price),
+				seckill_time:{start_Time,end_Time},
+				goods_id:Time.re_goods.goods_id,
+				video_url:Time.re_goods.video_url
+			}
+			try{
+				let DB = await inIt()
+				await DB.database().collection('seckill').add({data:obj})
+				// 查询该商品将秒杀字段改为true
+				await DB.database().collection('goods').doc(Time.re_goods.goods_id).update({data:{seckill:true}})
+				show.value = false
+				getSeckill()
+				new Feedback('提交成功','success').toast()
+				Time.se_cover = '';Time.se_title;
+				Time.se_price = '';Time.start = '';
+				Time.end = '';Time.re_goods.title = ''
+			}catch(e){
+				new Feedback('提交失败').toast()
+			}
+		}
+	//删除
+	async function deLete(id,index){
+		try{
+			let DB = await inIt();
+			await DB.database().collection('seckill').doc(id).remove();
+			data.seckill_goods.splice(index,1);
+			new Feedback('删除成功','success').toast();
+		}catch(e){
+			new Feedback('删除失败').toast();
 		}
 	}
 </script>
