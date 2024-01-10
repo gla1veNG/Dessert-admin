@@ -41,7 +41,7 @@
 						<text>设置开始时间</text>
 						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colStart" @change="changeStart">
 							<view>
-								<text class="pick-time">2024-01-08 00:00:00</text>
+								<text class="pick-time">{{Time.start}}</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
 							</view>
 						</picker>
@@ -53,7 +53,7 @@
 						<view>设置结束时间</view>
 						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd" @change="changeEnd">
 							<view>
-								<text class="pick-time">2024-01-10 00:00:00</text>
+								<text class="pick-time">{{Time.end}}</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
 							</view>
 						</picker>
@@ -72,7 +72,7 @@
 
 <script setup>
 	import {inIt} from '@/Acc-config/init.js'
-	import {ref,onMounted,reactive,toRefs} from 'vue'
+	import {ref,onMounted,reactive,toRefs, watch} from 'vue'
 	import {date} from '@/Acc-config/date.js'
 	import {current,days} from '@/Acc-config/ca-time.js'
 	function onEnter() {}
@@ -107,7 +107,8 @@
 			video_url:'',//关联的商品短视频
 			ori_price:'',//关联的商品原价
 		},
-		years:[{'year':date[0][0].time,'month':date[1][0].time}]
+		years:[{'year':date[0][0].time,'month':date[1][0].time}],
+		ban:false//判断设置的秒杀时间是否正确
 	})
 	//上传封面图
 	import {Feedback,Upload} from '@/Acc-config/media.js'
@@ -161,8 +162,37 @@
 	}
 	//开始时间和结束时间确定公用的方法
 	function conFirm(RES,val){
-		
+		const year = date[0][RES[0]].time;
+		const month = date[1][RES[1]].time;
+		const day = date[2][RES[2]].time;
+		const time = date[3][RES[3]].time;
+		const minute = date[4][RES[4]].time;
+		const sele_res = year + '/' + month + '/' + day + ' ' + time + ':' + minute + ':' + '00'
+		if(val === 'start'){
+			//开始时间
+			Time.start = sele_res;
+		}else{
+			Time.end = sele_res;
+		}
 	}
+	//监听结束时间是否小于开始时间
+	import moment from 'moment'
+	moment.locale('zh-cn');
+	moment.supp
+	watch([()=>Time.start,()=>Time.end],(newVal,oldVal)=>{
+		console.log(newVal);
+		if(newVal[0] != '' && newVal[1] != ''){
+			//转换时间戳
+			const start = moment(newVal[0],'YYYY/MM/DD hh:mm:ss').unix();//开始时间
+			const end = moment(newVal[1],'YYYY/MM/DD hh:mm:ss').unix();//结束时间
+			if(start >= end){
+				Time.end = '结束时间早于开始时间';
+				Time.ban = false;
+			}else if(start < end){
+				Time.ban = true;
+			}
+		}
+	})
 </script>
 
 <style scoped>

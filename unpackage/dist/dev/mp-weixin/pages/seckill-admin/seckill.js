@@ -45,7 +45,9 @@ const _sfc_main = {
         ori_price: ""
         //关联的商品原价
       },
-      years: [{ "year": AccConfig_date.date[0][0].time, "month": AccConfig_date.date[1][0].time }]
+      years: [{ "year": AccConfig_date.date[0][0].time, "month": AccConfig_date.date[1][0].time }],
+      ban: false
+      //判断设置的秒杀时间是否正确
     });
     async function upImage() {
       const local = await new AccConfig_media.Upload().image();
@@ -78,11 +80,40 @@ const _sfc_main = {
       }
     }
     function changeStart(e) {
-      e.detail.value;
+      const RES = e.detail.value;
+      conFirm(RES, "start");
     }
     function changeEnd(e) {
-      e.detail.value;
+      const RES = e.detail.value;
+      conFirm(RES, "end");
     }
+    function conFirm(RES, val) {
+      const year = AccConfig_date.date[0][RES[0]].time;
+      const month = AccConfig_date.date[1][RES[1]].time;
+      const day = AccConfig_date.date[2][RES[2]].time;
+      const time = AccConfig_date.date[3][RES[3]].time;
+      const minute = AccConfig_date.date[4][RES[4]].time;
+      const sele_res = year + "/" + month + "/" + day + " " + time + ":" + minute + ":00";
+      if (val === "start") {
+        Time.start = sele_res;
+      } else {
+        Time.end = sele_res;
+      }
+    }
+    common_vendor.hooks.locale("zh-cn");
+    common_vendor.watch([() => Time.start, () => Time.end], (newVal, oldVal) => {
+      console.log(newVal);
+      if (newVal[0] != "" && newVal[1] != "") {
+        const start = common_vendor.hooks(newVal[0], "YYYY/MM/DD hh:mm:ss").unix();
+        const end = common_vendor.hooks(newVal[1], "YYYY/MM/DD hh:mm:ss").unix();
+        if (start >= end) {
+          Time.end = "结束时间早于开始时间";
+          Time.ban = false;
+        } else if (start < end) {
+          Time.ban = true;
+        }
+      }
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: data.seckill_goods.length > 0
@@ -111,16 +142,18 @@ const _sfc_main = {
         l: common_vendor.o(($event) => Time.se_title = $event.detail.value),
         m: Time.se_price,
         n: common_vendor.o(($event) => Time.se_price = $event.detail.value),
-        o: Time.multiArray,
-        p: Time.muleiIndex,
-        q: common_vendor.o(colStart),
-        r: common_vendor.o(changeStart),
-        s: Time.multiArray,
-        t: Time.muleiIndex,
-        v: common_vendor.o(colEnd),
-        w: common_vendor.o(changeEnd),
-        x: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
-        y: show.value
+        o: common_vendor.t(Time.start),
+        p: Time.multiArray,
+        q: Time.muleiIndex,
+        r: common_vendor.o(colStart),
+        s: common_vendor.o(changeStart),
+        t: common_vendor.t(Time.end),
+        v: Time.multiArray,
+        w: Time.muleiIndex,
+        x: common_vendor.o(colEnd),
+        y: common_vendor.o(changeEnd),
+        z: common_vendor.o((...args) => _ctx.addTo && _ctx.addTo(...args)),
+        A: show.value
       });
     };
   }
