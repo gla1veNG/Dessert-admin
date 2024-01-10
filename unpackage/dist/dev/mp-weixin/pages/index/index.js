@@ -56,6 +56,25 @@ const _sfc_main = {
         search_data.Profit_top = res[0].height + search_data.Pro_height + 10;
       });
     }
+    function jump(index) {
+      switch (index) {
+        case 0:
+          common_vendor.wx$1.navigateTo({ url: "/pages/banner-admin/banner" });
+          break;
+        case 1:
+          common_vendor.wx$1.navigateTo({ url: "/pages/seckill-admin/seckill" });
+          break;
+        case 2:
+          common_vendor.wx$1.switchTab({ url: "/pages/commodity/commodity" });
+          break;
+        case 3:
+          common_vendor.wx$1.switchTab({ url: "/pages/order/order" });
+          break;
+        case 4:
+          common_vendor.wx$1.navigateTo({ url: "/pages/sort-admin/sort" });
+          break;
+      }
+    }
     return (_ctx, _cache) => {
       return {
         a: common_vendor.s("height:" + common_vendor.unref(S_top) + "px;"),
@@ -68,7 +87,8 @@ const _sfc_main = {
           return {
             a: item.image,
             b: common_vendor.t(item.name),
-            c: index
+            c: index,
+            d: common_vendor.o(($event) => jump(index), index)
           };
         }),
         h: common_vendor.s("top:" + common_vendor.unref(Profit_top) + "px;")

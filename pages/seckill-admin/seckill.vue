@@ -39,7 +39,7 @@
 				<view class="pick-view Underline">
 					<view>
 						<text>设置开始时间</text>
-						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colStart" @change="changeStart">
+						<picker class="flex-left" mode="multiSelector" :range="Time.start_arr" :value="Time.muleiIndex" range-key="name" @columnchange="colStart" @change="changeStart">
 							<view>
 								<text class="pick-time">{{Time.start}}</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -51,7 +51,7 @@
 				<view class="pick-view">
 					<view class="pick-view">
 						<view>设置结束时间</view>
-						<picker class="flex-left" mode="multiSelector" :range="Time.multiArray" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd" @change="changeEnd">
+						<picker class="flex-left" mode="multiSelector" :range="Time.end_arr" :value="Time.muleiIndex" range-key="name" @columnchange="colEnd" @change="changeEnd">
 							<view>
 								<text class="pick-time">{{Time.end}}</text>
 								<image src="/static/detail/xiangyou-jiantou.svg" mode=""></image>
@@ -72,109 +72,126 @@
 
 <script setup>
 	import {inIt} from '@/Acc-config/init.js'
-	import {ref,onMounted,reactive,toRefs, watch} from 'vue'
-	import {date} from '@/Acc-config/date.js'
-	import {current,days} from '@/Acc-config/ca-time.js'
-	function onEnter() {}
-	current();
-
-	onMounted(() => {
-		getSeckill();
-	})
-	
-	const show = ref(false);
-	const data = reactive({
-		seckill_goods: []
-	})
-	//获取数据
-	async function getSeckill() {
-		let DB = await inIt();
-		let res = await DB.database().collection('seckill').get();
-		data.seckill_goods = res.data;
-	}
-	
-	const Time = reactive({
-		multiArray:date,//多列选择器数据
-		muleiIndex:[0,0,0,0,0],//value 每一项的值
-		se_cover:'',//封面图
-		se_title:'',//标题
-		se_price:'',//秒杀价格
-		start:'',//开始时间
-		end:'',//结束时间
-		re_goods:{
-			title:'',//关联的商品标题
-			goods_id:'',//关联的商品id
-			video_url:'',//关联的商品短视频
-			ori_price:'',//关联的商品原价
-		},
-		years:[{'year':date[0][0].time,'month':date[1][0].time}],
-		ban:false//判断设置的秒杀时间是否正确
-	})
-	//上传封面图
-	import {Feedback,Upload} from '@/Acc-config/media.js'
-	async function upImage(){
-		const local = await new Upload().image();
-		wx.showLoading({title:'正在上传',mask:true});
-		const res = await new Upload().cloud(local[0].tempFilePath);
-		Time.se_cover = res;
-		wx.hideLoading();
+		import {ref,onMounted,reactive,toRefs,watch,toRaw } from 'vue'
+		import {start_date,end_date} from '@/Acc-config/date.js'
+		import {current,months,codays} from '@/Acc-config/ca-time.js'
+		function onEnter(){}
+		current()
 		
-	} 
-	//开始时间：滚动时触发
-	function colStart(event){
-		const RES = event.detail;
-		shAre(RES);
-	}
-	//结束时间：滚动时触发
-	function colEnd(event){
-		const RES = event.detail;
-		shAre(RES);
-	} 
-	//开始时间和结束时间滚动时触发公用的方法：重新计算某年某月的天数
-	function shAre(RES){
-		if(RES.column === 0){
-			//滚动了年
-			if(RES.value === 0){
-				//今年
-				Time.years[0].year = date[0][0].time
-			}else if(RES.value === 1){
-				//明年
-				Time.years[0].year = date[0][1].time
+		const show = ref(false)
+		const data = reactive({seckill_goods:[]})
+		onMounted(()=>{
+			getSeckill()
+		})
+		// 获取数据
+		async function getSeckill(){
+			let DB = await inIt()
+			let res = await DB.database().collection('seckill').get();
+			data.seckill_goods = res.data
+		}
+		
+		const Time = reactive({
+			start_arr:start_date,
+			end_arr:end_date,
+			multiIndex_a:[0,0,0,0,0],//开始时间value 每一项的值
+			multiIndex_b:[0,0,0,0,0],//结束时间value 每一项的值
+			se_cover:'',//封面图
+			se_title:'',//标题
+			se_price:'',//秒杀价格
+			start:'',//开始时间
+			end:'',//结束时间
+			re_goods:{
+				title:'',//关联的商品标题
+				goods_id:'',//关联的商品id
+				video_url:'',//关联的商品短视频
+				ori_price:''//关联的商品原价
+			},
+			years:[{'year':start_date[0][0].time,'month':start_date[1][0].time}],
+			ban:false//判断设置的秒杀时间是否正确
+		})
+		
+		// 上传封面图
+		import {Feedback,Upload} from '@/Acc-config/media.js'
+		async function upImage(){
+			const local = await new Upload().image()
+			wx.showLoading({title: '正在上传',mask:true})
+			const res = await new Upload().cloud(local[0].tempFilePath)
+			Time.se_cover = res
+			wx.hideLoading()
+		}
+		
+		// 开始时间：滚动时触发
+		function colStart(event){
+			const RES = event.detail
+			shAre(RES,Time.start_arr,Time.multiIndex_a,'start')
+		}
+		// 结束时间：滚动时触发
+		function colEnd(event){
+			const RES = event.detail
+			shAre(RES,Time.end_arr,Time.multiIndex_b,'end')
+		}
+		
+		// 开始时间和结束时间滚动时触发公用方法：从新计算某年某月的天数
+		function shAre(RES,to_date,mult,val){
+			mult[RES.column] = RES.value
+			switch(RES.column){
+				case 0: //拖动第1列:年
+					switch (mult[0]){
+						case 0://第一列的第一个值：当前年
+						to_date[1] = months(to_date[0][0].time)
+						to_date[2] = codays({year:to_date[0][0].time,month:to_date[1][0].time})
+						break;
+						case 1://第一列的第二个值：明年
+						to_date[1] = months(to_date[0][1].time)
+						to_date[2] = codays({year:to_date[0][1].time,month:-1})
+						break;
+					}
+					mult.splice(1,1,0)
+					mult.splice(2,1,0)
+					mult.splice(3,1,0)
+					mult.splice(4,1,0)
+				break;
+				case 1://拖动第二列：月
+				let MO = mult
+				to_date[2] = codays({year:to_date[0][MO[0]].time,month:to_date[1][MO[1]].time})
+				mult.splice(2,1,0)
+				mult.splice(3,1,0)
+				mult.splice(4,1,0)
+				break;
 			}
-		}else if(RES.column === 1){
-			//滚动了月
-			Time.years[0].month = date[RES.column][RES.value].time
 		}
-		if(RES.column === 0 || RES.column === 1 ){
-			days(Time.years);
-			Time.multiArray[2] = days(Time.years)[0];
-		}	
-	}
-	//开始时间：确定
-	function changeStart(e){
-		const RES = e.detail.value;
-		conFirm(RES,'start');
-	}
-	//结束时间：确定
-	function changeEnd(e){
-		const RES = e.detail.value;
-		conFirm(RES,'end');
-	}
+		
+		
+		// 开始时间：确定
+		function changeStart(e){
+			const RES = e.detail.value
+			conFirm(RES,'start',Time.start_arr)
+		}
+		// 结束时间：确定
+		function changeEnd(e){
+			const RES = e.detail.value
+			conFirm(RES,'end',Time.end_arr)
+		}
 	//开始时间和结束时间确定公用的方法
-	function conFirm(RES,val){
-		const year = date[0][RES[0]].time;
-		const month = date[1][RES[1]].time;
-		const day = date[2][RES[2]].time;
-		const time = date[3][RES[3]].time;
-		const minute = date[4][RES[4]].time;
-		const sele_res = year + '/' + month + '/' + day + ' ' + time + ':' + minute + ':' + '00'
-		if(val === 'start'){
-			//开始时间
-			Time.start = sele_res;
-		}else{
-			Time.end = sele_res;
+	function conFirm(RES,val,date){
+			const year = date[0][RES[0]].time
+			const month = date[1][RES[1]].time
+			const day = date[2][RES[2]].time
+			const time = date[3][RES[3]].time
+			const minute = date[4][RES[4]].time
+			const sele_res = year + '/' + month + '/' + day + ' ' + time + ':' + minute + ':' + '00'
+	
+			if(val == 'start'){
+				// 开始时间
+				Time.start = sele_res
+				Time.multiIndex_a = RES
+			}else{
+				// 结束时间
+				Time.end = sele_res
+				Time.multiIndex_b = RES
+			}
+			
 		}
-	}
 	//监听结束时间是否小于开始时间
 	import moment from 'moment'
 	moment.locale('zh-cn');

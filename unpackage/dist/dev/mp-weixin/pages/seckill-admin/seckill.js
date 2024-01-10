@@ -9,12 +9,10 @@ const _sfc_main = {
   __name: "seckill",
   setup(__props) {
     AccConfig_caTime.current();
+    const show = common_vendor.ref(false);
+    const data = common_vendor.reactive({ seckill_goods: [] });
     common_vendor.onMounted(() => {
       getSeckill();
-    });
-    const show = common_vendor.ref(false);
-    const data = common_vendor.reactive({
-      seckill_goods: []
     });
     async function getSeckill() {
       let DB = await AccConfig_init.inIt();
@@ -22,10 +20,12 @@ const _sfc_main = {
       data.seckill_goods = res.data;
     }
     const Time = common_vendor.reactive({
-      multiArray: AccConfig_date.date,
-      //多列选择器数据
-      muleiIndex: [0, 0, 0, 0, 0],
-      //value 每一项的值
+      start_arr: AccConfig_date.start_date,
+      end_arr: AccConfig_date.end_date,
+      multiIndex_a: [0, 0, 0, 0, 0],
+      //开始时间value 每一项的值
+      multiIndex_b: [0, 0, 0, 0, 0],
+      //结束时间value 每一项的值
       se_cover: "",
       //封面图
       se_title: "",
@@ -46,7 +46,7 @@ const _sfc_main = {
         ori_price: ""
         //关联的商品原价
       },
-      years: [{ "year": AccConfig_date.date[0][0].time, "month": AccConfig_date.date[1][0].time }],
+      years: [{ "year": AccConfig_date.start_date[0][0].time, "month": AccConfig_date.start_date[1][0].time }],
       ban: false
       //判断设置的秒杀时间是否正确
     });
@@ -59,46 +59,61 @@ const _sfc_main = {
     }
     function colStart(event) {
       const RES = event.detail;
-      shAre(RES);
+      shAre(RES, Time.start_arr, Time.multiIndex_a);
     }
     function colEnd(event) {
       const RES = event.detail;
-      shAre(RES);
+      shAre(RES, Time.end_arr, Time.multiIndex_b);
     }
-    function shAre(RES) {
-      if (RES.column === 0) {
-        if (RES.value === 0) {
-          Time.years[0].year = AccConfig_date.date[0][0].time;
-        } else if (RES.value === 1) {
-          Time.years[0].year = AccConfig_date.date[0][1].time;
-        }
-      } else if (RES.column === 1) {
-        Time.years[0].month = AccConfig_date.date[RES.column][RES.value].time;
-      }
-      if (RES.column === 0 || RES.column === 1) {
-        AccConfig_caTime.days(Time.years);
-        Time.multiArray[2] = AccConfig_caTime.days(Time.years)[0];
+    function shAre(RES, to_date, mult, val) {
+      mult[RES.column] = RES.value;
+      switch (RES.column) {
+        case 0:
+          switch (mult[0]) {
+            case 0:
+              to_date[1] = AccConfig_caTime.months(to_date[0][0].time);
+              to_date[2] = AccConfig_caTime.codays({ year: to_date[0][0].time, month: to_date[1][0].time });
+              break;
+            case 1:
+              to_date[1] = AccConfig_caTime.months(to_date[0][1].time);
+              to_date[2] = AccConfig_caTime.codays({ year: to_date[0][1].time, month: -1 });
+              break;
+          }
+          mult.splice(1, 1, 0);
+          mult.splice(2, 1, 0);
+          mult.splice(3, 1, 0);
+          mult.splice(4, 1, 0);
+          break;
+        case 1:
+          let MO = mult;
+          to_date[2] = AccConfig_caTime.codays({ year: to_date[0][MO[0]].time, month: to_date[1][MO[1]].time });
+          mult.splice(2, 1, 0);
+          mult.splice(3, 1, 0);
+          mult.splice(4, 1, 0);
+          break;
       }
     }
     function changeStart(e) {
       const RES = e.detail.value;
-      conFirm(RES, "start");
+      conFirm(RES, "start", Time.start_arr);
     }
     function changeEnd(e) {
       const RES = e.detail.value;
-      conFirm(RES, "end");
+      conFirm(RES, "end", Time.end_arr);
     }
-    function conFirm(RES, val) {
-      const year = AccConfig_date.date[0][RES[0]].time;
-      const month = AccConfig_date.date[1][RES[1]].time;
-      const day = AccConfig_date.date[2][RES[2]].time;
-      const time = AccConfig_date.date[3][RES[3]].time;
-      const minute = AccConfig_date.date[4][RES[4]].time;
+    function conFirm(RES, val, date) {
+      const year = date[0][RES[0]].time;
+      const month = date[1][RES[1]].time;
+      const day = date[2][RES[2]].time;
+      const time = date[3][RES[3]].time;
+      const minute = date[4][RES[4]].time;
       const sele_res = year + "/" + month + "/" + day + " " + time + ":" + minute + ":00";
-      if (val === "start") {
+      if (val == "start") {
         Time.start = sele_res;
+        Time.multiIndex_a = RES;
       } else {
         Time.end = sele_res;
+        Time.multiIndex_b = RES;
       }
     }
     common_vendor.hooks.locale("zh-cn");
@@ -222,12 +237,12 @@ const _sfc_main = {
         n: Time.se_price,
         o: common_vendor.o(($event) => Time.se_price = $event.detail.value),
         p: common_vendor.t(Time.start),
-        q: Time.multiArray,
+        q: Time.start_arr,
         r: Time.muleiIndex,
         s: common_vendor.o(colStart),
         t: common_vendor.o(changeStart),
         v: common_vendor.t(Time.end),
-        w: Time.multiArray,
+        w: Time.end_arr,
         x: Time.muleiIndex,
         y: common_vendor.o(colEnd),
         z: common_vendor.o(changeEnd),

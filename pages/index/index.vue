@@ -28,7 +28,7 @@
 	</view>
 	<!-- 九宫格 -->
 	<view class="Gong-ge" :style=" 'top:' + Profit_top + 'px;' ">
-		<view v-for="(item,index) in plate" :key="index">
+		<view v-for="(item,index) in plate" :key="index" @click="jump(index)">
 			<image :src="item.image" mode="aspectFit"></image>
 			<text>{{item.name}}</text>
 		</view>
@@ -89,6 +89,25 @@
 		query.exec((res)=>{
 			search_data.Profit_top = res[0].height + search_data.Pro_height + 10
 		})
+	}
+	//页面跳转
+	function jump(index){
+		switch(index){
+			case 0 : wx.navigateTo({url:'/pages/banner-admin/banner'}); 
+			break;
+			
+			case 1 : wx.navigateTo({url:'/pages/seckill-admin/seckill'});
+			break;
+			
+			case 2 : wx.switchTab({url:'/pages/commodity/commodity'});
+			break;
+			
+			case 3 : wx.switchTab({url:'/pages/order/order'});
+			break;
+			
+			case 4 : wx.navigateTo({url:'/pages/sort-admin/sort'});
+			break;
+		}
 	}
 </script>
 

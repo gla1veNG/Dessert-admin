@@ -1,6 +1,12 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/seckill-admin/seckill",
 			"style": {
 				"navigationBarTitleText": "秒杀管理",
@@ -49,17 +55,10 @@
 				"navigationBarBackgroundColor": "#fefefe"
 			}
 		},
-	
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		},
 		{
 			"path": "pages/order/order",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "订单管理"
 			}
 		}
 	],

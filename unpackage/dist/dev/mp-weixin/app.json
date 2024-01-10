@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/seckill-admin/seckill",
     "pages/banner-admin/banner",
     "pages/goods-list/list",
@@ -7,7 +8,6 @@
     "pages/goods-admin/goods",
     "pages/specs/specs",
     "pages/sort-admin/sort",
-    "pages/index/index",
     "pages/order/order"
   ],
   "window": {
