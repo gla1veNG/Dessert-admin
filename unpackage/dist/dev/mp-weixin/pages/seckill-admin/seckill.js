@@ -128,6 +128,28 @@ const _sfc_main = {
       Time.re_goods.video_url = newVal.video_url;
       Time.re_goods.ori_price = newVal.goods_price;
     });
+    function subMit() {
+      switch (true) {
+        case Time.se_cover === "":
+          new AccConfig_media.Feedback("请上传封面图").toast();
+          break;
+        case Time.se_title === "":
+          new AccConfig_media.Feedback("请输入标题").toast();
+          break;
+        case Time.se_price === "":
+          new AccConfig_media.Feedback("请输入秒杀价").toast();
+          break;
+        case (Time.start === "" || Time.end === ""):
+          new AccConfig_media.Feedback("请设置秒杀时间").toast();
+          break;
+        case Time.ban === false:
+          new AccConfig_media.Feedback("结束时间早于开始时间").toast();
+          break;
+        case Time.re_goods.goods_id === "":
+          new AccConfig_media.Feedback("请先关联一个商品").toast();
+          break;
+      }
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: data.seckill_goods.length > 0
@@ -143,32 +165,33 @@ const _sfc_main = {
       }, data.seckill_goods.length === 0 ? {} : {}, {
         d: common_vendor.o(($event) => show.value = true),
         e: common_vendor.o(($event) => show.value = false),
-        f: Time.se_cover === ""
+        f: common_vendor.o(subMit),
+        g: Time.se_cover === ""
       }, Time.se_cover === "" ? {
-        g: common_vendor.o(upImage)
+        h: common_vendor.o(upImage)
       } : {}, {
-        h: Time.se_cover,
-        i: Time.se_cover != ""
+        i: Time.se_cover,
+        j: Time.se_cover != ""
       }, Time.se_cover != "" ? {
-        j: common_vendor.o(($event) => Time.se_cover = "")
+        k: common_vendor.o(($event) => Time.se_cover = "")
       } : {}, {
-        k: Time.se_title,
-        l: common_vendor.o(($event) => Time.se_title = $event.detail.value),
-        m: Time.se_price,
-        n: common_vendor.o(($event) => Time.se_price = $event.detail.value),
-        o: common_vendor.t(Time.start),
-        p: Time.multiArray,
-        q: Time.muleiIndex,
-        r: common_vendor.o(colStart),
-        s: common_vendor.o(changeStart),
-        t: common_vendor.t(Time.end),
-        v: Time.multiArray,
-        w: Time.muleiIndex,
-        x: common_vendor.o(colEnd),
-        y: common_vendor.o(changeEnd),
-        z: common_vendor.t(Time.re_goods.title === "" ? "添加" : Time.re_goods.title),
-        A: common_vendor.o(addTo),
-        B: show.value
+        l: Time.se_title,
+        m: common_vendor.o(($event) => Time.se_title = $event.detail.value),
+        n: Time.se_price,
+        o: common_vendor.o(($event) => Time.se_price = $event.detail.value),
+        p: common_vendor.t(Time.start),
+        q: Time.multiArray,
+        r: Time.muleiIndex,
+        s: common_vendor.o(colStart),
+        t: common_vendor.o(changeStart),
+        v: common_vendor.t(Time.end),
+        w: Time.multiArray,
+        x: Time.muleiIndex,
+        y: common_vendor.o(colEnd),
+        z: common_vendor.o(changeEnd),
+        A: common_vendor.t(Time.re_goods.title === "" ? "添加" : Time.re_goods.title),
+        B: common_vendor.o(addTo),
+        C: show.value
       });
     };
   }

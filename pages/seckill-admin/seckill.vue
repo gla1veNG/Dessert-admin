@@ -23,7 +23,7 @@
 			<view class="modify-sub modify-padding">
 				<image src="/static/detail/guanbi.svg" mode="widthFix" @click="show = false"></image>
 				<text>创建秒杀</text>
-				<text>提交</text>
+				<text @click="subMit">提交</text>
 			</view>
 			<view class="upload-cover">
 				<image src="/static/detail/miaosha-img.jpg" mode="aspectFill" v-if="Time.se_cover === ''" @click="upImage"></image>
@@ -209,6 +209,29 @@
 		Time.re_goods.video_url = newVal.video_url;
 		Time.re_goods.ori_price = newVal.goods_price;
 	})
+	//提交
+	function subMit(){
+		switch(true){
+			case Time.se_cover === '' : new Feedback('请上传封面图').toast();
+			break;
+			
+			case Time.se_title === '' : new Feedback('请输入标题').toast();
+			break;
+			
+			case Time.se_price === '' : new Feedback('请输入秒杀价').toast();
+			break;
+			
+			case Time.start === '' || Time.end === '' : new Feedback('请设置秒杀时间').toast();
+			break;
+			
+			case Time.ban === false : new Feedback('结束时间早于开始时间').toast();
+			break;
+			
+			case Time.re_goods.goods_id === '' : new Feedback('请先关联一个商品').toast();
+			break;
+			dafault:database();
+		}
+	}
 </script>
 
 <style scoped>
