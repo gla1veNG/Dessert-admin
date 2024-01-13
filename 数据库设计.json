@@ -81,3 +81,34 @@
 		video_url:'视频链接'
 	}
 ]
+
+/* 短视频评论数据库 video_comment */
+规则:所有用户可读,仅创建者可读写
+[
+	{
+		avatarurl:'头像',
+		nickname:'昵称',
+		time:'评论时间',
+		content:'评论内容',
+		goods_id:'关联的商品id'
+	}
+]
+
+/* 用户信息数据库 user_infor */
+规则:仅创建者可读写
+[
+	{
+		avatarUrl:'头像',
+		nickName:'昵称',
+		pay:'用于支付时的监听',
+		watch_num:'用于支付时的监听'
+	}
+]
+
+/* 商品收藏数据库 collect_goods */
+规则:仅创建者可读写
+[
+	{
+		goods_id:'收藏的商品id'
+	}
+]
