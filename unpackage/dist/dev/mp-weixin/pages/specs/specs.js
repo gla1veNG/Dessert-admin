@@ -9,45 +9,16 @@ const _sfc_main = {
     const show = common_vendor.ref(false);
     const sku_data = common_vendor.reactive({
       //{att_name:'颜色',att_val:''}
-      sku: [{
-        title: 1,
-        att_data: [],
-        price: "",
-        stock: "",
-        image: ""
-      }]
+      sku: [{ title: 1, att_data: [], price: "", stock: "", image: "" }]
     });
-    const Sto_att = common_vendor.reactive({
-      attobj: [{
-        att: "",
-        title: 1
-      }, {
-        att: "",
-        title: 2
-      }, {
-        att: "",
-        title: 3
-      }]
-    });
-    const attribute = common_vendor.reactive({
-      selected: []
-    });
+    const Sto_att = common_vendor.reactive({ attobj: [{ att: "", title: 1 }, { att: "", title: 2 }, { att: "", title: 3 }] });
+    const attribute = common_vendor.reactive({ selected: [] });
     function subMit() {
-      sku_data.sku = [{
-        title: 1,
-        att_data: [],
-        price: "",
-        stock: "",
-        image: ""
-      }];
+      sku_data.sku = [{ title: 1, att_data: [], price: "", stock: "", image: "" }];
       const filter = Sto_att.attobj.filter((item) => item.att != "");
       const new_arr = [];
       filter.forEach((item) => {
-        new_arr.push({
-          att: item.att,
-          name: item.att,
-          checked: true
-        });
+        new_arr.push({ att: item.att, name: item.att, checked: true });
       });
       attribute.selected = new_arr;
       show.value = false;
@@ -56,10 +27,7 @@ const _sfc_main = {
     function calsku() {
       let filter_arr = attribute.selected.filter((item) => item.checked);
       let new_att = filter_arr.map((item) => {
-        return {
-          att_name: item.att,
-          att_val: ""
-        };
+        return { att_name: item.att, att_val: "" };
       });
       sku_data.sku.forEach((item) => {
         item.att_data = JSON.parse(JSON.stringify(new_att));
@@ -68,20 +36,11 @@ const _sfc_main = {
     function newSpecs() {
       let num = sku_data.sku[sku_data.sku.length - 1].title;
       num++;
-      const new_sku = {
-        title: num,
-        att_data: [],
-        price: "",
-        stock: "",
-        image: ""
-      };
+      const new_sku = { title: num, att_data: [], price: "", stock: "", image: "" };
       sku_data.sku.push(new_sku);
       let filter_arr = attribute.selected.filter((item) => item.checked);
       let new_att = filter_arr.map((item) => {
-        return {
-          att_name: item.att,
-          att_val: ""
-        };
+        return { att_name: item.att, att_val: "" };
       });
       sku_data.sku[sku_data.sku.length - 1].att_data = JSON.parse(JSON.stringify(new_att));
     }
@@ -105,10 +64,7 @@ const _sfc_main = {
     function fInd(att, checked) {
       if (checked) {
         sku_data.sku.forEach((item) => {
-          item.att_data.push({
-            att_name: att,
-            att_val: ""
-          });
+          item.att_data.push({ att_name: att, att_val: "" });
         });
       } else {
         sku_data.sku.forEach((item_a, index_a) => {
@@ -123,10 +79,7 @@ const _sfc_main = {
     async function upLoad(index) {
       try {
         let local = await new AccConfig_media.Upload().image();
-        common_vendor.wx$1.showLoading({
-          title: "正在上传",
-          mask: true
-        });
+        common_vendor.wx$1.showLoading({ title: "正在上传", mask: true });
         let res = await new AccConfig_media.Upload().cloud(local[0].tempFilePath);
         sku_data.sku[index].image = res;
         common_vendor.wx$1.hideLoading();
@@ -194,9 +147,9 @@ const _sfc_main = {
         return { att: item.att_name, title: index + 1 };
       });
       Sto_att.attobj = new_arr;
-      if (Arr[0].att_data.length === 1) {
+      if (Arr[0].att_data.length == 1) {
         Sto_att.attobj.push({ att: "", title: 2 }, { att: "", title: 3 });
-      } else if (Arr[0].att_data.length === 2) {
+      } else if (Arr[0].att_data.length == 2) {
         Sto_att.attobj.push({ att: "", title: 3 });
       }
       subMit();

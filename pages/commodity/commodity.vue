@@ -16,7 +16,7 @@
 				<view class="Com-price">
 					<text class="Com-title over-text">{{item.goods_title}}</text>
 					<text class="stock-view">库存 {{item.stock}}</text>
-					<text class="Real-price">{{item.goods_price}}¥</text>
+					<text class="Real-price">¥{{item.goods_price}}</text>
 					<view class="Button-rig">
 						<text class="shelf-true" v-if="item.shelves" @click="shelf(item._id,index)">下架</text>
 						<text class="shelf-false" v-else>已下架</text>
@@ -63,8 +63,10 @@
 		let DB = await inIt()
 		const _ = DB.database().command
 		const res_sort = await DB.database().collection('goods_sort').where({quantity:_.gt(0)}).field({sort_name:true}).get()
+		console.log(res_sort)
 		// 请求商品数据
 		const res_goods = await DB.database().collection('goods').where({category:res_sort.data[0].sort_name}).limit(10).field(field_obj).get()
+		console.log(res_goods)
 		data.sort = res_sort.data
 		data.goods = res_goods.data
 		data.sort_name = res_sort.data[0].sort_name
@@ -80,6 +82,7 @@
 		data.sort_id = id
 		let DB = await inIt()
 		const res_goods = await DB.database().collection('goods').where({category:sort_name}).limit(10).field(field_obj).get()
+		console.log(res_goods)
 		data.goods = res_goods.data
 	}
 	
@@ -112,18 +115,28 @@
 		data.goods = [...data.goods,...res_goods.data]
 		loading.value = false
 	})
-	//跳转分类
+	
+	// 跳转分类
 	function rootSoRt(){
 		wx.navigateTo({
 			url:'/pages/sort-admin/sort'
 		})
 	}
-	//跳转新增商品
+	// 新增商品
 	function rootGoods(){
 		wx.navigateTo({
 			url:'/pages/goods-admin/goods'
 		})
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </script>
 
 <style scoped>
@@ -149,7 +162,7 @@
 	font-size: 28rpx;
 }
 .addto{
-	background-color: antiquewhite;
+	background-color: #FFFFFF;
 	font-weight: bold;
 }
 /* 右边 */

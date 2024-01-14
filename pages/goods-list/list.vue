@@ -1,77 +1,85 @@
 <template>
-	<view class="select-goods" v-for="(item,index) in data.list" :ket="index" @click="seLect(item.goods_title,item._id,item.goods_price,item.video_url,item.relation)">
+	<view class="select-goods" v-for="(item,index) in data.list" :key='index'
+	@click="seLect(item.goods_title,item._id,item.goods_price,item.video_url,item.relation)"
+	>
 		<view>
 			<image :src="item.goods_cover" mode="aspectFill"></image>
 		</view>
 		<view>
-			<text class="over-text line-clamp" :style="{color:(item.relation ? '#dfdfdf' : '')}">{{item.goods_title}}</text>
-			<text :style="{color:(item.relation ? '#dfdfdf' : '')}">{{item.goods_price}}￥</text>
+			<text class="over-text line-clamp" :style="{color:(item.relation ? '#f2f2f2' : '')}">{{item.goods_title}}</text>
+			<text :style="{color:(item.relation ? '#f2f2f2' : '')}">¥{{item.goods_price}}</text>
 		</view>
 	</view>
 	<!-- 没有数据的提示 -->
-	<view class="Tips" v-if="data.list.length === 0">目前没有任何商品数据</view>
-	<!-- 上拉加载提示 -->
+	<view class="Tips" v-if="data.list.length === 0">你还没有商品数据</view>
+	<!-- 上拉加载的提示 -->
 	<view class="loading-hei">
 		<Loading v-if="loading"></Loading>
 	</view>
 </template>
 
 <script setup>
-	import {onMounted,reactive,ref, watch} from 'vue'
+	import {onMounted,reactive,ref,watch} from 'vue'
 	import {inIt} from '@/Acc-config/init.js'
 	import Loading from '@/pages/public-view/loading.vue'
-	import { Feedback } from '../../Acc-config/media';
+	import {Feedback} from '@/Acc-config/media.js'
+	
 	onMounted(()=>{
-		goods();
+		goods()
+	})
+	const data = reactive({list:[]})
+	let obj = {goods_title:true,goods_cover:true,goods_price:true,video_url:true,seckill:true}
+	async function goods(){
+		let DB = await inIt()
+		const res = await DB.database().collection('goods').where({shelves:true}).limit(10).field(obj).get()
+		data.list = res.data
+	}
+	// 上拉加载
+	import {onReachBottom,onLoad} from '@dcloudio/uni-app'
+	let loading = ref(false)
+	let page_n = ref(0)
+	onReachBottom(async()=>{
+		loading.value = true
+		page_n.value++
+		let sk = page_n.value * 10
+		let DB = await inIt()
+		const res_goods = await DB.database().collection('goods').where({shelves:true}).limit(10).skip(sk).field(obj).get()
+		data.list = [...data.list,...res_goods.data]
+		loading.value = false
 	})
 	
-	const data = reactive({
-		list:[]
-	})
-	let obj = {goods_title:true,goods_cover:true,goods_price:true,video_ur:true,seckill:true};
-	async function goods(){
-		let DB = await inIt();
-		const res = await DB.database().collection('goods').where({shelves:true}).limit(10).field(obj).get();
-		data.list = res.data;
-	}
-	//上拉加载
-	import {onReachBottom,onLoad} from '@dcloudio/uni-app'
-	let page_n = ref(0);
-	let loading = ref(false);
-	onReachBottom(async()=>{
-	loading.value = true;
-	page_n.value++;
-	let sk = page_n.value *10;
-	let DB = await inIt();
-	const res_goods = await DB.database().collection('goods').where({shelves:true}).limit(10).skip(sk).field({obj}).get()
-	data.list = [...data.list,...res_goods.data];
-	loading.value = false;
-	})
-	//选中关联商品
+	// 选中关联商品
 	import {select_goods} from '@/Acc-config/answer.js'
 	function seLect(goods_title,goods_id,goods_price,video_url,relation){
 		if(relation){
-			new Feedback('该商品已被关联').toast();
+			new Feedback('该商品已被关联','none').toast()
 		}else{
-			select_goods.value = {goods_title,goods_id,goods_price,video_url};
-			wx.navigateBack({delta:1});
+			select_goods.value = {goods_title,goods_id,goods_price,video_url}
+			wx.navigateBack({delta:1})
 		}
 	}
-	//接受上个页面传来的值
-	const rel_data = reactive({
-		data:[]
-	})
+	
+	// 接收上个页面传来的值
+	const rel_data = reactive({data:[]})
 	onLoad((event)=>{
-		rel_data.data = JSON.parse(event.ref_id);
+		rel_data.data = JSON.parse(event.ref_id)
 	})
-	watch(()=>data.list,(newVal,oldVal)=>{
-		for(let i = 0;i<rel_data.data.length;i++){
-			let index = newVal.findIndex(item=>item._id === rel_data.data[i]);
+	watch(()=>data.list,(newVal,oldVla)=>{
+		for(let i = 0; i < rel_data.data.length; i++){
+			let index = newVal.findIndex(item=>item._id == rel_data.data[i])
 			if(index >= 0){
-				data.list[index]['relation'] = true;
+				data.list[index]['relation'] = true
 			}
 		}
 	})
+	
+	
+	
+	
+	
+	
+	
+	
 </script>
 
 <style scoped>

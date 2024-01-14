@@ -8,7 +8,7 @@ const _sfc_main = {
   setup(__props) {
     const show = common_vendor.ref(false);
     common_vendor.onMounted(() => {
-      getBannner();
+      getBanner();
     });
     const data = common_vendor.reactive({
       banner_data: [],
@@ -20,7 +20,7 @@ const _sfc_main = {
       }
     });
     const { banner_data, banner_cover, re_goods } = common_vendor.toRefs(data);
-    async function getBannner() {
+    async function getBanner() {
       let DB = await AccConfig_init.inIt();
       let res = await DB.database().collection("banner").get();
       data.banner_data = res.data;
@@ -46,10 +46,10 @@ const _sfc_main = {
     });
     function subMit() {
       switch (true) {
-        case data.banner_cover === "":
+        case data.banner_cover == "":
           new AccConfig_media.Feedback("请上传封面图").toast();
           break;
-        case data.re_goods.title === "":
+        case data.re_goods.title == "":
           new AccConfig_media.Feedback("请关联一个商品").toast();
           break;
         default:
@@ -66,7 +66,7 @@ const _sfc_main = {
         data.banner_cover = "";
         data.re_goods.title = "";
         common_vendor.wx$1.hideLoading();
-        getBannner();
+        getBanner();
       } catch (e) {
         new AccConfig_media.Feedback("提交失败").toast();
       }
@@ -97,8 +97,8 @@ const _sfc_main = {
         d: common_vendor.o(($event) => show.value = true),
         e: common_vendor.o(($event) => show.value = false),
         f: common_vendor.o(subMit),
-        g: common_vendor.unref(banner_cover) === ""
-      }, common_vendor.unref(banner_cover) === "" ? {
+        g: common_vendor.unref(banner_cover) == ""
+      }, common_vendor.unref(banner_cover) == "" ? {
         h: common_vendor.o(upImage)
       } : {}, {
         i: common_vendor.unref(banner_cover),
@@ -106,9 +106,10 @@ const _sfc_main = {
       }, common_vendor.unref(banner_cover) != "" ? {
         k: common_vendor.o(($event) => banner_cover.value = "")
       } : {}, {
-        l: common_vendor.t(common_vendor.unref(re_goods).title === "" ? "添加" : common_vendor.unref(re_goods).title),
+        l: common_vendor.t(common_vendor.unref(re_goods).title == "" ? "添加" : common_vendor.unref(re_goods).title),
         m: common_vendor.o(addTo),
-        n: show.value
+        n: show.value,
+        o: common_vendor.o(($event) => show.value = false)
       });
     };
   }

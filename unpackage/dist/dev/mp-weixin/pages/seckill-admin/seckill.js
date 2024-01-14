@@ -17,6 +17,7 @@ const _sfc_main = {
     async function getSeckill() {
       let DB = await AccConfig_init.inIt();
       let res = await DB.database().collection("seckill").get();
+      console.log(res);
       data.seckill_goods = res.data;
     }
     const Time = common_vendor.reactive({
@@ -66,6 +67,7 @@ const _sfc_main = {
       shAre(RES, Time.end_arr, Time.multiIndex_b);
     }
     function shAre(RES, to_date, mult, val) {
+      console.log("修改的列为：" + RES.column + "，值为：" + RES.value);
       mult[RES.column] = RES.value;
       switch (RES.column) {
         case 0:
@@ -122,7 +124,7 @@ const _sfc_main = {
         const start = common_vendor.hooks(newVal[0], "YYYY/MM/DD hh:mm:ss").unix();
         const end = common_vendor.hooks(newVal[1], "YYYY/MM/DD hh:mm:ss").unix();
         if (start >= end) {
-          Time.end = "结束时间早于开始时间";
+          Time.end = "结束时间早已开始时间";
           Time.ban = false;
         } else if (start < end) {
           Time.ban = true;
@@ -144,23 +146,23 @@ const _sfc_main = {
     });
     function subMit() {
       switch (true) {
-        case Time.se_cover === "":
-          new AccConfig_media.Feedback("请上传封面图").toast();
+        case Time.se_cover == "":
+          new AccConfig_media.Feedback("请上传封面图", "none").toast();
           break;
-        case Time.se_title === "":
-          new AccConfig_media.Feedback("请输入标题").toast();
+        case Time.se_title == "":
+          new AccConfig_media.Feedback("请输入标题", "none").toast();
           break;
-        case Time.se_price === "":
-          new AccConfig_media.Feedback("请输入秒杀价").toast();
+        case Time.se_price == "":
+          new AccConfig_media.Feedback("请输入秒杀价", "none").toast();
           break;
-        case (Time.start === "" || Time.end === ""):
-          new AccConfig_media.Feedback("请设置秒杀时间").toast();
+        case (Time.start == "" || Time.end == ""):
+          new AccConfig_media.Feedback("请设置秒杀时间", "none").toast();
           break;
-        case Time.ban === false:
-          new AccConfig_media.Feedback("结束时间早于开始时间").toast();
+        case Time.ban == false:
+          new AccConfig_media.Feedback("结束时间早已开始时间", "none").toast();
           break;
-        case Time.re_goods.goods_id === "":
-          new AccConfig_media.Feedback("请先关联一个商品").toast();
+        case Time.re_goods.goods_id == "":
+          new AccConfig_media.Feedback("请关联一个商品", "none").toast();
           break;
         default:
           database();
@@ -218,13 +220,13 @@ const _sfc_main = {
             d: index
           };
         }),
-        c: data.seckill_goods.length === 0
-      }, data.seckill_goods.length === 0 ? {} : {}, {
+        c: data.seckill_goods.length == 0
+      }, data.seckill_goods.length == 0 ? {} : {}, {
         d: common_vendor.o(($event) => show.value = true),
         e: common_vendor.o(($event) => show.value = false),
         f: common_vendor.o(subMit),
-        g: Time.se_cover === ""
-      }, Time.se_cover === "" ? {
+        g: Time.se_cover == ""
+      }, Time.se_cover == "" ? {
         h: common_vendor.o(upImage)
       } : {}, {
         i: Time.se_cover,
@@ -238,17 +240,18 @@ const _sfc_main = {
         o: common_vendor.o(($event) => Time.se_price = $event.detail.value),
         p: common_vendor.t(Time.start),
         q: Time.start_arr,
-        r: Time.muleiIndex,
+        r: Time.multiIndex_a,
         s: common_vendor.o(colStart),
         t: common_vendor.o(changeStart),
         v: common_vendor.t(Time.end),
         w: Time.end_arr,
-        x: Time.muleiIndex,
+        x: Time.multiIndex_b,
         y: common_vendor.o(colEnd),
         z: common_vendor.o(changeEnd),
-        A: common_vendor.t(Time.re_goods.title === "" ? "添加" : Time.re_goods.title),
+        A: common_vendor.t(Time.re_goods.title == "" ? "添加" : Time.re_goods.title),
         B: common_vendor.o(addTo),
-        C: show.value
+        C: show.value,
+        D: common_vendor.o(($event) => show.value = false)
       });
     };
   }

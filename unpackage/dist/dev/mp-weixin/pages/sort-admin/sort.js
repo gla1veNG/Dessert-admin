@@ -18,20 +18,20 @@ const _sfc_main = {
     async function getsort() {
       let DB = await AccConfig_init.inIt();
       const res = await DB.database().collection("goods_sort").limit(10).field({ _openid: false }).get();
+      console.log(res);
       data.sort = res.data;
     }
     async function subMit() {
-      if (data.sort_name === "") {
-        new AccConfig_media.Feedback("输入分类不能为空", "none").toast();
+      if (data.sort_name == "") {
+        new AccConfig_media.Feedback("请输入分类", "none").toast();
         return false;
       }
       let DB = await AccConfig_init.inIt();
       const query_data = await DB.database().collection("goods_sort").where({ sort_name: data.sort_name }).get();
       if (query_data.data.length > 0) {
-        new AccConfig_media.Feedback("该分类已存在", "none").toast();
-        data.sort_name = "";
+        new AccConfig_media.Feedback("该分类已经存在", "none").toast();
       } else {
-        const res = await DB.database().collection("goods_sort").add({ data: { sort_name: data.sort_name, quantity: 0 } });
+        let res = await DB.database().collection("goods_sort").add({ data: { sort_name: data.sort_name, quantity: 0 } });
         data.sort.push({ quantity: 0, sort_name: data.sort_name, _id: res._id });
         data.sort_name = "";
         show.value = false;
@@ -59,16 +59,15 @@ const _sfc_main = {
     });
     async function deLete(id, index, quantity) {
       if (quantity > 0) {
-        new AccConfig_media.Feedback("请先删除该分类里面的商品", "none").toast();
+        new AccConfig_media.Feedback("请先删除该分类下的商品", "none").toast();
         return false;
       }
       try {
         let DB = await AccConfig_init.inIt();
         await DB.database().collection("goods_sort").doc(id).remove();
         data.sort.splice(index, 1);
-        console.log(data.sort);
       } catch (e) {
-        new AccConfig_media.Feedback("请先删除该分类里面的商品", "none").toast();
+        new AccConfig_media.Feedback("删除失败").toast();
       }
     }
     return (_ctx, _cache) => {
@@ -89,9 +88,10 @@ const _sfc_main = {
         f: common_vendor.o(($event) => common_vendor.isRef(sort_name) ? sort_name.value = $event.detail.value : null),
         g: common_vendor.o(subMit),
         h: show.value,
-        i: common_vendor.unref(loading)
+        i: common_vendor.o(($event) => show.value = false),
+        j: common_vendor.unref(loading)
       }, common_vendor.unref(loading) ? {} : {}, {
-        j: common_vendor.o(($event) => show.value = true)
+        k: common_vendor.o(($event) => show.value = true)
       });
     };
   }

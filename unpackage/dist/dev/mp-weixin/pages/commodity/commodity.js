@@ -27,7 +27,9 @@ const _sfc_main = {
       let DB = await AccConfig_init.inIt();
       const _ = DB.database().command;
       const res_sort = await DB.database().collection("goods_sort").where({ quantity: _.gt(0) }).field({ sort_name: true }).get();
+      console.log(res_sort);
       const res_goods = await DB.database().collection("goods").where({ category: res_sort.data[0].sort_name }).limit(10).field(field_obj).get();
+      console.log(res_goods);
       data.sort = res_sort.data;
       data.goods = res_goods.data;
       data.sort_name = res_sort.data[0].sort_name;
@@ -41,6 +43,7 @@ const _sfc_main = {
       data.sort_id = id;
       let DB = await AccConfig_init.inIt();
       const res_goods = await DB.database().collection("goods").where({ category: sort_name }).limit(10).field(field_obj).get();
+      console.log(res_goods);
       data.goods = res_goods.data;
     }
     async function shelf(id, index) {

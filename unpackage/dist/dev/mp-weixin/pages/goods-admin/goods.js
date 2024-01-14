@@ -57,14 +57,14 @@ const _sfc_main = {
       sortArray: [],
       sort_value: "",
       sort_id: ""
-      //分类id，用于提交数据库时对选中的分类下的 quantity++
+      //分类的id，用于提交数据时对选中的分类下的quantity++
     });
     const { sortArray, sort_value } = common_vendor.toRefs(sortdata);
     function changeEnd(e) {
       sortdata.sort_value = sortdata.sortArray[e.detail.value].sort_name;
       sortdata.sort_id = sortdata.sortArray[e.detail.value]._id;
     }
-    let detail = common_vendor.reactive({ sto_detail: [] });
+    const detail = common_vendor.reactive({ sto_detail: [] });
     async function upDetail() {
       const local = await new AccConfig_media.Upload().image(9);
       local.forEach((item) => {
@@ -83,33 +83,33 @@ const _sfc_main = {
     }
     function subMit() {
       switch (true) {
-        case cover.goods_title === "":
-          new AccConfig_media.Feedback("请填写商品标题").toast();
+        case cover.goods_title == "":
+          new AccConfig_media.Feedback("请填写标题").toast();
           break;
-        case cover.sto_image.length === 0:
-          new AccConfig_media.Feedback("请填写商品图片").toast();
+        case cover.sto_image.length == 0:
+          new AccConfig_media.Feedback("请上传图片").toast();
           break;
-        case sortdata.sort_value === "":
+        case sortdata.sort_value == "":
           new AccConfig_media.Feedback("请选择分类").toast();
           break;
-        case priceinv.price === "":
-          new AccConfig_media.Feedback("请填写商品价格").toast();
+        case priceinv.price == "":
+          new AccConfig_media.Feedback("请输入价格").toast();
           break;
-        case priceinv.stock === "":
-          new AccConfig_media.Feedback("请填写商品库存").toast();
+        case priceinv.stock == "":
+          new AccConfig_media.Feedback("请输入库存").toast();
           break;
-        case detail.sto_detail.length === 0:
-          new AccConfig_media.Feedback("请填写商品详情图片").toast();
+        case detail.sto_detail.length == 0:
+          new AccConfig_media.Feedback("请上传详情图").toast();
           break;
         default:
           database();
       }
     }
     async function database() {
-      common_vendor.wx$1.showLoading({ title: "商品上架中", mask: true });
+      common_vendor.wx$1.showLoading({ title: "上传中", mask: true });
       let res_banner = await new AccConfig_media.Upload().multi(cover.sto_image, "image");
       let res_detail = await new AccConfig_media.Upload().multi(detail.sto_detail, "image");
-      let res_video = video.sto_video === "" ? "" : await new AccConfig_media.Upload().cloud(video.sto_video);
+      let res_video = video.sto_video == "" ? "" : await new AccConfig_media.Upload().cloud(video.sto_video);
       let obj = {
         goods_title: cover.goods_title,
         goods_banner: res_banner,
@@ -117,8 +117,8 @@ const _sfc_main = {
         video_url: res_video,
         category: sortdata.sort_value,
         goods_price: Number(priceinv.price),
-        goods_stock: Number(priceinv.stock),
-        sku: specs.specs_data.length === 0 ? false : true,
+        stock: Number(priceinv.stock),
+        sku: specs.specs_data.length == 0 ? false : true,
         goods_details: res_detail,
         sold: 0,
         shelves: true,
@@ -132,9 +132,10 @@ const _sfc_main = {
         }
         const _ = DB.database().command;
         await DB.database().collection("goods_sort").doc(sortdata.sort_id).update({ data: { quantity: _.inc(1) } });
-        new AccConfig_media.Feedback("上架商品成功", "success").toast();
+        new AccConfig_media.Feedback("上传成功", "success").toast();
       } catch (e) {
-        new AccConfig_media.Feedback("提交数据失败").toast();
+        console.log(e);
+        new AccConfig_media.Feedback("提交失败").toast();
       }
     }
     return (_ctx, _cache) => {
@@ -157,8 +158,8 @@ const _sfc_main = {
       }, video.sto_video != "" ? {
         g: common_vendor.o(($event) => video.sto_video = "")
       } : {}, {
-        h: video.sto_video === ""
-      }, video.sto_video === "" ? {
+        h: video.sto_video == ""
+      }, video.sto_video == "" ? {
         i: common_vendor.o(upVideo)
       } : {}, {
         j: video.sto_video != ""
@@ -174,8 +175,8 @@ const _sfc_main = {
         r: specs.specs_data.length > 0 ? true : false,
         s: common_vendor.unref(stock),
         t: common_vendor.o(($event) => common_vendor.isRef(stock) ? stock.value = $event.detail.value : null),
-        v: specs.specs_data.length === 0
-      }, specs.specs_data.length === 0 ? {} : {}, {
+        v: specs.specs_data.length == 0
+      }, specs.specs_data.length == 0 ? {} : {}, {
         w: specs.specs_data.length > 0
       }, specs.specs_data.length > 0 ? {
         x: common_vendor.f(specs.specs_data, (item, index, i0) => {
@@ -194,9 +195,9 @@ const _sfc_main = {
         })
       } : {}, {
         y: common_vendor.o(juMp),
-        z: common_vendor.unref(detail).sto_detail.length > 0
-      }, common_vendor.unref(detail).sto_detail.length > 0 ? {
-        A: common_vendor.f(common_vendor.unref(detail).sto_detail, (item, index, i0) => {
+        z: detail.sto_detail.length > 0
+      }, detail.sto_detail.length > 0 ? {
+        A: common_vendor.f(detail.sto_detail, (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.o(($event) => previewDeta(item.image), index),
