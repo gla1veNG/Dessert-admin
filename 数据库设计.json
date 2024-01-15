@@ -112,3 +112,43 @@
 		goods_id:'收藏的商品id'
 	}
 ]
+
+/* 购物车数据库 sh_cart */
+规则:仅创建者可读写
+[
+	{
+		goods_id:'商品id',
+		goods_image:'商品图片',
+		goods_title:'商品标题',
+		goods_price:'商品价格',
+		buy_amount:'购买数量',
+		subtotal:'小计:单价*数量',
+		select:fasle,用于选中和取消选中,
+		specs:[
+			{
+				att_name:'口味',
+				att_val:'微辣'
+			}
+		],
+		SPECE_STR:'用于查询相同规格的'
+	}
+]
+
+/* 商品详情页评论数据库 goods_eva */
+规则:所有用户可读,仅创建者可读写
+[
+	{
+		avatarurl:'用户头像',
+		nickname:'用户昵称',
+		eav_text:'评论内容',
+		goods_id:'关联商品id',
+		eav_image:[
+			{image:'图片链接'}
+		],
+		time:'评论时间',
+		specs:[{
+			att_name:'口味',
+			att_val:'微辣'
+		}]
+	}
+]
