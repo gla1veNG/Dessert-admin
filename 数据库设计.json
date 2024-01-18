@@ -152,3 +152,56 @@
 		}]
 	}
 ]
+
+/* 收货地址数据库 re_address */
+规则:仅创建者可读写
+[
+	{
+		name:'姓名',
+		mobile:'手机号码',
+		district:'省市区',
+		address:'详细地址',
+		tacitly:false, '默认收货地址标示'
+	}
+]
+
+/* 订单数据库 order_data */
+规则://用户可读可写 && 商家可读可写
+{
+	"read": "doc._openid == auth.openid || auth.openid in get(`database.men.0b153f9a658c039404ec18167272f838`)._openid",
+	"write": "doc._openid == auth.openid || auth.openid in get(`database.men.0b153f9a658c039404ec18167272f838`)._openid"
+}
+
+[
+	{
+		goods_id:'',//商品id
+		goods_image:'',//商品图片
+		goods_title:'',//商品标题
+		goods_price:0,//商品价格
+		buy_amount:0,//购买数量
+		specs:[],//规格
+		subtotal:0,//总价
+		select:false,//购物车是否选中
+		SPECE_STR:'',//用于查询相同规格的
+		order_number:'',//订单编号
+		address:[
+			{name:'姓名',
+			mobile:'手机号码',
+			district:'省市区',
+			address:'详细地址',
+			tacitly:false, '默认收货地址标示',
+			}
+		],
+		order_time:'下单时间:年月日时分秒',
+		query_time:'用于商家查询当天的数据:年月日',
+		pay_success:'支付成功: success,待支付: not_pay,已取消订单: can_order',
+		deliver:'待发货: stay,已发货/待收货: already,已收货: rece_goods,退款中: ref_pro, 退款成功: ref_succ'
+		evaluate:'待评价:false,已评价:true',
+		waybill_No:'运单号',
+		payment:'统一下单返回的数据包',wx_pay
+		Re_reason:'退款原因',
+		out_trade_no:'商户订单号',wx_pay
+		out_refund_no:'商户退款单号'wx_pay
+	},
+	
+]
