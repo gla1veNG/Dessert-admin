@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const AccConfig_init = require("../../Acc-config/init.js");
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -40,7 +41,7 @@ const _sfc_main = {
     });
     const { S_height, S_top, Custom_height, Pro_height, Profit_top, plate } = common_vendor.toRefs(search_data);
     common_vendor.onMounted(() => {
-      capSule(), proFit();
+      capSule(), proFit(), coUnt();
     });
     function capSule() {
       const but_data = common_vendor.wx$1.getMenuButtonBoundingClientRect();
@@ -52,8 +53,8 @@ const _sfc_main = {
     function proFit() {
       const query = common_vendor.wx$1.createSelectorQuery();
       query.select(".profit-view").boundingClientRect();
-      query.exec((res) => {
-        search_data.Profit_top = res[0].height + search_data.Pro_height + 10;
+      query.exec((res2) => {
+        search_data.Profit_top = res2[0].height + search_data.Pro_height + 10;
       });
     }
     function jump(index) {
@@ -75,6 +76,29 @@ const _sfc_main = {
           break;
       }
     }
+    const res = common_vendor.reactive({ profit: "0.00", sales: "0.00", orders: 0, com_order: 0 });
+    const { profit, sales, orders, com_order } = common_vendor.toRefs(res);
+    common_vendor.hooks.locale("zh-cn");
+    async function coUnt() {
+      let DB = await AccConfig_init.inIt();
+      const BASE = DB.database();
+      const $ = BASE.command.aggregate;
+      let query_time = common_vendor.hooks().utcOffset(8).format("YYYY-MM-DD");
+      const profit2 = await BASE.collection("order_data").aggregate().group({ _id: null, totalPrice: $.sum("$subtotal") }).end();
+      const PROFIT = profit2.list.length > 0 ? profit2.list[0].totalPrice : 0;
+      res.profit = PROFIT === 0 ? "0.00" : PROFIT;
+      const sales2 = await BASE.collection("order_data").aggregate().match({ query_time }).group({ _id: null, totalPrice: $.sum("$subtotal") }).end();
+      const SALES = sales2.list.length > 0 ? sales2.list[0].totalPrice : 0;
+      res.sales = SALES === 0 ? "0.00" : SALES;
+      const orders2 = await BASE.collection("order_data").where({ query_time }).count();
+      res.orders = orders2.total;
+      const com_order2 = await BASE.collection("order_data").count();
+      res.com_order = com_order2.total;
+      common_vendor.wx$1.stopPullDownRefresh();
+    }
+    common_vendor.onPullDownRefresh(() => {
+      coUnt();
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.s("height:" + common_vendor.unref(S_top) + "px;"),
@@ -82,8 +106,12 @@ const _sfc_main = {
         c: common_vendor.s("line-height:" + common_vendor.unref(S_height) + "px;"),
         d: common_vendor.s("padding-left:16px;"),
         e: common_vendor.s("height:" + common_vendor.unref(Custom_height) + "px;"),
-        f: common_vendor.s("top:" + common_vendor.unref(Pro_height) + "px;"),
-        g: common_vendor.f(common_vendor.unref(plate), (item, index, i0) => {
+        f: common_vendor.t(common_vendor.unref(profit)),
+        g: common_vendor.t(common_vendor.unref(sales)),
+        h: common_vendor.t(common_vendor.unref(orders)),
+        i: common_vendor.t(common_vendor.unref(com_order)),
+        j: common_vendor.s("top:" + common_vendor.unref(Pro_height) + "px;"),
+        k: common_vendor.f(common_vendor.unref(plate), (item, index, i0) => {
           return {
             a: item.image,
             b: common_vendor.t(item.name),
@@ -91,7 +119,7 @@ const _sfc_main = {
             d: common_vendor.o(($event) => jump(index), index)
           };
         }),
-        h: common_vendor.s("top:" + common_vendor.unref(Profit_top) + "px;")
+        l: common_vendor.s("top:" + common_vendor.unref(Profit_top) + "px;")
       };
     };
   }

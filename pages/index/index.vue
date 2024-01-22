@@ -8,20 +8,20 @@
 		<view class="profit-view" :style=" 'top:' + Pro_height + 'px;'">
 			<view class="profit-num">
 				<text>累计收益(￥)</text>
-				<text>3</text>
+				<text>{{profit}}</text>
 			</view>
 			<view class="profit-sale">
 				<view>
 					<text>今日销售额</text>
-					<text>20</text>
+					<text>{{sales}}</text>
 				</view>
 				<view>
 					<text>今日订单数</text>
-					<text>20</text>
+					<text>{{orders}}</text>
 				</view>
 				<view>
 					<text>累计订单数</text>
-					<text>40</text>
+					<text>{{com_order}}</text>
 				</view>
 			</view>
 		</view>
@@ -72,7 +72,8 @@
 	const {S_height,S_top,Custom_height,Pro_height,Profit_top,plate} = toRefs(search_data)
 	onMounted(()=>{
 		capSule(),
-		proFit()
+		proFit(),
+		coUnt()
 	})
 	//获取胶囊按钮位置
 	function capSule(){
@@ -109,6 +110,38 @@
 			break;
 		}
 	}
+	//计算累计收益，今日销售额，今日订单数，累计订单数
+	const res = reactive({profit:'0.00',sales:'0.00',orders:0,com_order:0})
+	const {profit,sales,orders,com_order} = toRefs(res)
+	import {inIt} from '@/Acc-config/init.js'
+	import moment from 'moment'
+	moment.locale('zh-cn');
+	async function coUnt(){
+		let DB = await inIt()
+		const BASE = DB.database()
+		const $ = BASE.command.aggregate
+		let query_time = moment().utcOffset(8).format('YYYY-MM-DD')
+		// 计算累计收益
+		const profit = await BASE.collection('order_data').aggregate().group({_id: null,totalPrice: $.sum('$subtotal')}).end()
+		const PROFIT = profit.list.length > 0 ? profit.list[0].totalPrice : 0
+		res.profit = PROFIT === 0 ? '0.00' : PROFIT
+		// 今日销售额
+		const sales = await BASE.collection('order_data').aggregate().match({query_time}).group({_id: null,totalPrice: $.sum('$subtotal')}).end()
+		const SALES = sales.list.length > 0 ? sales.list[0].totalPrice : 0
+		res.sales = SALES === 0 ? '0.00' : SALES
+		// 今日订单数
+		const orders = await BASE.collection('order_data').where({query_time}).count()
+		res.orders = orders.total
+		// 累计订单数
+		const com_order = await BASE.collection('order_data').count()
+		res.com_order = com_order.total
+		wx.stopPullDownRefresh()
+	}
+	//下拉刷新
+	import {onPullDownRefresh} from '@dcloudio/uni-app'
+	onPullDownRefresh(()=>{
+		coUnt()
+	})			
 </script>
 
 <style>
