@@ -50,9 +50,9 @@
 	<!-- 没有数据的提示 -->
 	<view class="Tips" v-if="order_data.length === 0">没有订单数据</view>
 	<!-- 上拉加载的提示 -->
-	<!-- <view class="loading-hei">
+	<view class="loading-hei">
 		<Loading v-if="loading"></Loading>
-	</view> -->
+	</view>
 	<!-- 填写运单号的弹窗 -->
 	<view class="modify-att" v-if="waybill">
 		<view class="Waybill-view">
@@ -143,6 +143,22 @@
 		wx.hideLoading()
 		deliver_on.value = ''
 	}
+	// 确认退款
+	import {Feedback} from '@/Acc-config/media.js'
+	async function reFund(index,out_trade_no,subtotal,_id){
+		wx.showLoading({title: '退款申请中',mask:true})
+		let DB = await inIt()
+		const BASE = DB.database()
+		const $ = BASE.command.aggregate
+		// 查询总金额
+		const tatal_fee = await BASE.collection('order_data').aggregate().match({out_trade_no}).group({_id: null,totalPrice: $.sum('$subtotal')}).end()
+		// 退款成功
+		await BASE.collection('order_data').doc(_id).update({
+			data:{deliver:'ref_succ',subtotal:'0'}
+		})
+		new Feedback('退款成功','none').toast()
+		res_order.order_data[index].deliver = 'ref_succ'
+	}	
 </script>
 
 <style>
@@ -155,6 +171,7 @@ page{
 	display: flex;
 	justify-content: space-around;
 	color: #000000;
+	padding-top:8px ;
 	position: fixed;
 	top: 0;
 	left: 0;

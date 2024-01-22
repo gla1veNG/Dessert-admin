@@ -1,6 +1,11 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const AccConfig_init = require("../../Acc-config/init.js");
+const AccConfig_media = require("../../Acc-config/media.js");
+if (!Math) {
+  Loading();
+}
+const Loading = () => "../public-view/loading.js";
 const _sfc_main = {
   __name: "order",
   setup(__props) {
@@ -73,6 +78,18 @@ const _sfc_main = {
       common_vendor.wx$1.hideLoading();
       deliver_on.value = "";
     }
+    async function reFund(index, out_trade_no, subtotal, _id) {
+      common_vendor.wx$1.showLoading({ title: "退款申请中", mask: true });
+      let DB = await AccConfig_init.inIt();
+      const BASE = DB.database();
+      const $ = BASE.command.aggregate;
+      await BASE.collection("order_data").aggregate().match({ out_trade_no }).group({ _id: null, totalPrice: $.sum("$subtotal") }).end();
+      await BASE.collection("order_data").doc(_id).update({
+        data: { deliver: "ref_succ", subtotal: "0" }
+      });
+      new AccConfig_media.Feedback("退款成功", "none").toast();
+      res_order.order_data[index].deliver = "ref_succ";
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.f(common_vendor.unref(tab), (item, index, i0) => {
@@ -106,7 +123,7 @@ const _sfc_main = {
           }, item.deliver === "already" ? {} : {}, {
             m: item.deliver === "ref_pro"
           }, item.deliver === "ref_pro" ? {
-            n: common_vendor.o(($event) => _ctx.reFund(index, item.out_trade_no, item.subtotal, item._id), index)
+            n: common_vendor.o(($event) => reFund(index, item.out_trade_no, item.subtotal, item._id), index)
           } : {}, {
             o: item.deliver === "ref_succ"
           }, item.deliver === "ref_succ" ? {} : {}) : {}, {
@@ -115,12 +132,14 @@ const _sfc_main = {
         }),
         c: common_vendor.unref(order_data).length === 0
       }, common_vendor.unref(order_data).length === 0 ? {} : {}, {
-        d: waybill.value
+        d: common_vendor.unref(loading)
+      }, common_vendor.unref(loading) ? {} : {}, {
+        e: waybill.value
       }, waybill.value ? {
-        e: deliver_on.value,
-        f: common_vendor.o(($event) => deliver_on.value = $event.detail.value),
-        g: common_vendor.o(($event) => (waybill.value = false, deliver_on.value = "")),
-        h: common_vendor.o(deLiver)
+        f: deliver_on.value,
+        g: common_vendor.o(($event) => deliver_on.value = $event.detail.value),
+        h: common_vendor.o(($event) => (waybill.value = false, deliver_on.value = "")),
+        i: common_vendor.o(deLiver)
       } : {});
     };
   }
